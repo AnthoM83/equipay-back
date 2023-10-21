@@ -21,6 +21,8 @@ public class GastoService {
 
     // Dependencias
     @Autowired
+    BalanceService balanceService;
+    @Autowired
     IGastoRepository gastoRepo;
     @Autowired
     IUsuarioRepository usuarioRepo;
@@ -50,16 +52,15 @@ public class GastoService {
         return mapper.toGastoDtoList(gastos);
     }
 
-    
 //    public List<GastoDto> listarGastosDeLosQueUsuarioSeBeneficia(String usuarioId) {
 //        Usuario beneficiado = usuarioRepo.findById(usuarioId).orElseThrow();
 //        Gasto gasto = Gasto.builder()
+//                .beneficiados(beneficiado)
 //                .build();
 //        Example example = Example.of(gasto);
 //        List<Gasto> gastos = gastoRepo.findAll(example);
 //        return mapper.toGastoDtoList(gastos);
 //    }
-
     public List<GastoDto> listarGastosEnGrupo(Integer grupoId) {
         Grupo grupo = grupoRepo.findById(grupoId).orElseThrow();
         Gasto gasto = Gasto.builder()
@@ -92,10 +93,10 @@ public class GastoService {
 //        List<Gasto> gastos = gastoRepo.findAll(example);
 //        return mapper.toGastoDtoList(gastos);
 //    }
-
     public void crearGasto(GastoAddDto dto) {
         Gasto gasto = mapper.toEntity(dto);
         gastoRepo.save(gasto);
+        balanceService.reajustarBalancePorGasto(dto);
     }
 
     public void modificarGasto(Integer id, GastoUpdateDto dto) {
@@ -106,7 +107,7 @@ public class GastoService {
             throw new NoSuchElementException();
         }
     }
-    
+
     public void eliminarGasto(Integer id) {
         if (gastoRepo.existsById(id)) {
             gastoRepo.deleteById(id);

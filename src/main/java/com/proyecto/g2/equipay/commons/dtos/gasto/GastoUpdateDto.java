@@ -16,18 +16,18 @@ public class GastoUpdateDto {
 
     // Propiedades
     @NotNull(message = "El gasto debe tener un monto.")
-    private Long monto;
+    private Double monto;
     @NotBlank(message = "El gasto debe tener una moneda.")
     private String moneda;
     private String descripcion;
     private LocalDate fecha;
 
     // Asociaciones
-    @NotBlank(message = "El gasto debe tener un grupo.")
-    private String idGrupo;
+    @NotNull(message = "El gasto debe tener un grupo.")
+    private Integer idGrupo;
     @NotBlank(message = "El gasto debe ser cubierto por un usuario.")
     private String idCubiertoPor;
     @NotEmpty(message = "El gasto debe beneficiar a al menos un usuario.")
     private List<String> idBeneficiados;
-    private String idCategoria;
+    private Integer idCategoria;
 }

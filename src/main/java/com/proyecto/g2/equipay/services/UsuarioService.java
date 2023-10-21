@@ -19,60 +19,59 @@ public class UsuarioService {
 
     // Dependencias
     @Autowired
-    IUsuarioRepository repo;
+    IUsuarioRepository usuarioRepo;
     @Autowired
     UsuarioMapper mapper;
 
     // Métodos
     public UsuarioDto buscarUsuario(String id) {
-        Usuario usuario = repo.findById(id).orElseThrow();
+        Usuario usuario = usuarioRepo.findById(id).orElseThrow();
         return mapper.toUsuarioDto(usuario);
     }
 
     public List<UsuarioDto> listarUsuarios() {
-        List<Usuario> usuarios = repo.findAll();
+        List<Usuario> usuarios = usuarioRepo.findAll();
         return mapper.toUsuarioDtoList(usuarios);
     }
 
     public void crearUsuario(UsuarioAddDto dto) {
-        Optional<Usuario> find = repo.findById(dto.getCorreo());
+        Optional<Usuario> find = usuarioRepo.findById(dto.getCorreo());
         if (find.isEmpty()) {
             Usuario usuario = mapper.toEntity(dto);
             usuario.setEstadoUsuario(EstadoUsuario.ACTIVO);
-            repo.save(usuario);
+            usuarioRepo.save(usuario);
         } else {
             throw new EntityExistsException();
         }
     }
 
     public void modificarUsuario(String id, UsuarioUpdateDto dto) {
-        Usuario usuario = repo.findById(id).orElseThrow();
-        Usuario usuarioModificado = mapper.toEntity(dto);
-        if (!dto.getPassword().isBlank()) {
-            usuarioModificado.setPassword(usuario.getPassword());
+        Usuario usuario = usuarioRepo.findById(id).orElseThrow();
+        usuario.setNombre(dto.getNombre());
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            usuario.setPassword(dto.getPassword());
         }
-        usuarioModificado.setCorreo(usuario.getCorreo());
-        repo.save(usuarioModificado);
+        usuarioRepo.save(usuario);
     }
 
     public void eliminarUsuario(String id) {
-        if (repo.existsById(id)) {
-            repo.deleteById(id);
+        if (usuarioRepo.existsById(id)) {
+            usuarioRepo.deleteById(id);
         } else {
             throw new NoSuchElementException();
         }
     }
 
     public void bloquearUsuario(String id) {
-        Usuario usuario = repo.findById(id).orElseThrow();
+        Usuario usuario = usuarioRepo.findById(id).orElseThrow();
         usuario.setEstadoUsuario(EstadoUsuario.BLOQUEADO);
-        repo.save(usuario);
+        usuarioRepo.save(usuario);
     }
 
     public void desbloquearUsuario(String id) {
-        Usuario usuario = repo.findById(id).orElseThrow();
+        Usuario usuario = usuarioRepo.findById(id).orElseThrow();
         usuario.setEstadoUsuario(EstadoUsuario.ACTIVO);
-        repo.save(usuario);
+        usuarioRepo.save(usuario);
     }
 
 }

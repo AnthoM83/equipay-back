@@ -22,7 +22,7 @@ public class Balance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Long monto;
+    private Double deuda;
     private String moneda;
 
     // Asociaciones

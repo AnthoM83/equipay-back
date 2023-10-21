@@ -23,7 +23,7 @@ public class Pago {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Long monto;
+    private Double monto;
     private String moneda;
     private LocalDate fecha;
 
