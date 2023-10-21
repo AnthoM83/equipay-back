@@ -2,8 +2,10 @@ package com.proyecto.g2.equipay.services;
 
 import com.proyecto.g2.equipay.models.Categoria;
 import com.proyecto.g2.equipay.repositories.ICategoriaRepository;
+import jakarta.persistence.EntityExistsException;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +26,12 @@ public class CategoriaService {
     }
 
     public void crearCategoria(Categoria categoria) {
-        repo.save(categoria);
+        Optional<Categoria> categoriaExistente = repo.findById(categoria.getId());
+        if (categoriaExistente.isEmpty()) {
+            repo.save(categoria);
+        } else {
+            throw new EntityExistsException();
+        }
     }
 
     public void modificarCategoria(Integer id, Categoria categoria) {

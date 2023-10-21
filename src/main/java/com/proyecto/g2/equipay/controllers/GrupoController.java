@@ -1,5 +1,6 @@
 package com.proyecto.g2.equipay.controllers;
 
+import com.proyecto.g2.equipay.commons.dtos.grupo.AgregarUsuarioAGrupoDto;
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoAddDto;
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoDto;
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoUpdateDto;
@@ -31,12 +32,7 @@ public class GrupoController {
     // Métodos
     @GetMapping("/{id}")
     public GrupoDto buscarGrupo(@PathVariable Integer id) {
-        try {
-            return service.buscarGrupo(id);
-        } catch (NoSuchElementException exc) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Grupo no encontrado.", exc);
-        }
+        return service.buscarGrupo(id);
     }
 
     @GetMapping("/")
@@ -55,7 +51,7 @@ public class GrupoController {
     }
 
     @PutMapping("/{id}")
-    public void modificarGrupo(@PathVariable Integer id, GrupoUpdateDto dto) {
+    public void modificarGrupo(@PathVariable Integer id, @Valid @RequestBody GrupoUpdateDto dto) {
         try {
             service.modificarGrupo(id, dto);
         } catch (NoSuchElementException exc) {
@@ -73,7 +69,15 @@ public class GrupoController {
                     HttpStatus.NOT_FOUND, "Grupo no encontrado.", exc);
         }
     }
-    
-    
+
+    @PostMapping("/{id}/usuarios")
+    public void agregarUsuarioAGrupo(@PathVariable Integer id, @Valid @RequestBody AgregarUsuarioAGrupoDto dto) {
+        try {
+            service.agregarUsuarioAGrupo(id, dto.getIdUsuario());
+        } catch (NoSuchElementException exc) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Grupo no encontrado.", exc);
+        }
+    }
 
 }

@@ -5,6 +5,7 @@ import com.proyecto.g2.equipay.commons.dtos.admin.AdminDto;
 import com.proyecto.g2.equipay.commons.dtos.admin.AdminUpdateDto;
 import com.proyecto.g2.equipay.services.AdminService;
 import jakarta.persistence.EntityExistsException;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -43,7 +45,7 @@ public class AdminController {
     }
 
     @PostMapping("/admins")
-    public void crearAdmin(AdminAddDto dto) {
+    public void crearAdmin(@Valid @RequestBody AdminAddDto dto) {
         try {
             service.crearAdmin(dto);
         } catch (EntityExistsException exc) {
@@ -53,7 +55,7 @@ public class AdminController {
     }
 
     @PutMapping("/admins/{id}")
-    public void modificarAdmin(@PathVariable String id, AdminUpdateDto dto) {
+    public void modificarAdmin(@PathVariable String id, @Valid @RequestBody AdminUpdateDto dto) {
         try {
             service.modificarAdmin(id, dto);
         } catch (NoSuchElementException exc) {

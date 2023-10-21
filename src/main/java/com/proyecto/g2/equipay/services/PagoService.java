@@ -20,6 +20,8 @@ public class PagoService {
 
     // Dependencias
     @Autowired
+    BalanceService balanceService;
+    @Autowired
     IPagoRepository pagoRepo;
     @Autowired
     IUsuarioRepository usuarioRepo;
@@ -96,16 +98,9 @@ public class PagoService {
     public void crearPago(PagoAddDto dto) {
         Pago pago = mapper.toEntity(dto);
         pagoRepo.save(pago);
+        balanceService.reajustarBalancePorPago(dto);
     }
 
-//    public void modificarPago(Integer id, PagoUpdateDto dto) {
-//        if (pagoRepo.existsById(id)) {
-//            Pago pagoModificado = mapper.toEntity(dto);
-//            pagoRepo.save(pagoModificado);
-//        } else {
-//            throw new NoSuchElementException();
-//        }
-//    }
     public void eliminarPago(Integer id) {
         if (pagoRepo.existsById(id)) {
             pagoRepo.deleteById(id);

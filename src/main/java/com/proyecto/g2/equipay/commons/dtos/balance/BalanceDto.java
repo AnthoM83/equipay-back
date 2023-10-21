@@ -1,6 +1,5 @@
-package com.proyecto.g2.equipay.commons.dtos.pago;
+package com.proyecto.g2.equipay.commons.dtos.balance;
 
-import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,16 +7,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PagoDto {
+public class BalanceDto {
 
     // Propiedades
     private Integer id;
-    private Double monto;
+    private Double deuda;
     private String moneda;
-    private LocalDate fecha;
 
     // Asociaciones
     private Integer idGrupo;
-    private String idRealiza;
-    private String idRecibe;
+    private String idUsuario;
 }

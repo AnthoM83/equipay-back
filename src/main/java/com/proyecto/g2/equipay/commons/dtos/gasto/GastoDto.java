@@ -13,14 +13,14 @@ public class GastoDto {
 
     // Propiedades
     private Integer id;
-    private Long monto;
+    private Double monto;
     private String moneda;
     private String descripcion;
     private LocalDate fecha;
 
     // Asociaciones
-    private String idGrupo;
+    private Integer idGrupo;
     private String idCubiertoPor;
     private List<String> idBeneficiados;
-    private String idCategoria;
+    private Integer idCategoria;
 }

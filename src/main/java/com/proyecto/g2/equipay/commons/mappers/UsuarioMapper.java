@@ -5,6 +5,7 @@ import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioFullDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioUpdateDto;
 import com.proyecto.g2.equipay.models.Usuario;
+import java.util.ArrayList;
 import java.util.List;
 import org.mapstruct.Mapper;
 
@@ -22,4 +23,16 @@ public interface UsuarioMapper {
     UsuarioFullDto toUsuarioFullDto(Usuario usuario);
 
     List<UsuarioFullDto> toUsuarioFullDtoList(List<Usuario> usuarios);
+
+    default List<String> map(List<Usuario> usuarios) {
+        List<String> list = new ArrayList<>();
+        usuarios.forEach(usuario -> {
+            list.add(usuario.getCorreo());
+        });
+        return list;
+    }
+
+    default String map(Usuario usuario) {
+        return usuario.getCorreo();
+    }
 }

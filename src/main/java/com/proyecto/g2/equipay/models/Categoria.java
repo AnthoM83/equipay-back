@@ -1,8 +1,6 @@
 package com.proyecto.g2.equipay.models;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,7 +18,6 @@ public class Categoria {
 
     // Propiedades
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     private Integer id;
     @NotBlank

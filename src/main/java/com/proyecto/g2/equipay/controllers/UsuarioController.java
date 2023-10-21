@@ -59,7 +59,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public void modificarUsuario(@PathVariable String id, UsuarioUpdateDto dto) {
+    public void modificarUsuario(@PathVariable String id, @Valid @RequestBody UsuarioUpdateDto dto) {
         try {
             service.modificarUsuario(id, dto);
         } catch (NoSuchElementException exc) {

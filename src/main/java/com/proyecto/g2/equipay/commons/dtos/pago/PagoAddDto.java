@@ -11,12 +11,12 @@ import lombok.NoArgsConstructor;
 public class PagoAddDto {
 
     // Propiedades
-    private Long monto;
+    private Double monto;
     private String moneda;
     private LocalDate fecha;
 
     // Asociaciones
-    private String idGrupo;
+    private Integer idGrupo;
     private String idRealiza;
     private String idRecibe;
 }

@@ -27,7 +27,7 @@ public class Gasto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Long monto;
+    private Double monto;
     private String moneda;
     private String descripcion;
     private LocalDate fecha;

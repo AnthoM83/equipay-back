@@ -4,6 +4,7 @@ import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoAddDto;
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoDto;
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoUpdateDto;
 import com.proyecto.g2.equipay.commons.mappers.GrupoMapper;
+import com.proyecto.g2.equipay.models.Balance;
 import com.proyecto.g2.equipay.models.Grupo;
 import com.proyecto.g2.equipay.models.Usuario;
 import com.proyecto.g2.equipay.repositories.IGrupoRepository;
@@ -67,6 +68,13 @@ public class GrupoService {
         } else {
             throw new NoSuchElementException();
         }
+    }
+
+    public void agregarUsuarioAGrupo(Integer idGrupo, String idUsuario) {
+        Grupo grupo = grupoRepo.findById(idGrupo).orElseThrow();
+        Usuario usuario = usuarioRepo.findById(idUsuario).orElseThrow();
+        grupo.getMiembros().add(usuario);
+        grupoRepo.save(grupo);
     }
 
 }
