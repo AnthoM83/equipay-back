@@ -1,4 +1,4 @@
-package com.proyecto.g2.equipay.models;
+package com.proyecto.g2.equipay.commons.enums;
 
 public enum EstadoUsuario {
     ACTIVO,

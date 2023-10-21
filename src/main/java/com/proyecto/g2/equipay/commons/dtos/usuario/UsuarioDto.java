@@ -1,4 +1,4 @@
-package com.proyecto.g2.equipay.commons.dtos;
+package com.proyecto.g2.equipay.commons.dtos.usuario;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,5 +12,4 @@ public class UsuarioDto {
     private String correo;
     private String nombre;
     private String apellido;
-    private String estadoUsuario;
 }
