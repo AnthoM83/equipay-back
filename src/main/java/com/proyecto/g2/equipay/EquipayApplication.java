@@ -9,10 +9,10 @@ public class EquipayApplication {
 
     public static void main(String[] args) throws IOException {
         SpringApplication.run(EquipayApplication.class, args);
-        openHomePage();
+        openSwagger();
     }
 
-    private static void openHomePage() throws IOException {
+    private static void openSwagger() throws IOException {
         Runtime rt = Runtime.getRuntime();
         rt.exec("rundll32 url.dll,FileProtocolHandler " + "http://localhost:8080/swagger-ui/index.html");
     }
