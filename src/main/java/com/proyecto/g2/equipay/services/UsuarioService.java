@@ -13,6 +13,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UsuarioService {
@@ -34,6 +35,7 @@ public class UsuarioService {
         return mapper.toUsuarioDtoList(usuarios);
     }
 
+    @Transactional
     public void crearUsuario(UsuarioAddDto dto) {
         Optional<Usuario> find = usuarioRepo.findById(dto.getCorreo());
         if (find.isEmpty()) {
@@ -45,6 +47,7 @@ public class UsuarioService {
         }
     }
 
+    @Transactional
     public void modificarUsuario(String id, UsuarioUpdateDto dto) {
         Usuario usuario = usuarioRepo.findById(id).orElseThrow();
         usuario.setNombre(dto.getNombre());
@@ -54,6 +57,7 @@ public class UsuarioService {
         usuarioRepo.save(usuario);
     }
 
+    @Transactional
     public void eliminarUsuario(String id) {
         if (usuarioRepo.existsById(id)) {
             usuarioRepo.deleteById(id);
@@ -62,12 +66,14 @@ public class UsuarioService {
         }
     }
 
+    @Transactional
     public void bloquearUsuario(String id) {
         Usuario usuario = usuarioRepo.findById(id).orElseThrow();
         usuario.setEstadoUsuario(EstadoUsuario.BLOQUEADO);
         usuarioRepo.save(usuario);
     }
 
+    @Transactional
     public void desbloquearUsuario(String id) {
         Usuario usuario = usuarioRepo.findById(id).orElseThrow();
         usuario.setEstadoUsuario(EstadoUsuario.ACTIVO);

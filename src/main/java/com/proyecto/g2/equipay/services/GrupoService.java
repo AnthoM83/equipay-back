@@ -4,7 +4,6 @@ import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoAddDto;
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoDto;
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoUpdateDto;
 import com.proyecto.g2.equipay.commons.mappers.GrupoMapper;
-import com.proyecto.g2.equipay.models.Balance;
 import com.proyecto.g2.equipay.models.Grupo;
 import com.proyecto.g2.equipay.models.Usuario;
 import com.proyecto.g2.equipay.repositories.IGrupoRepository;
@@ -14,6 +13,7 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class GrupoService {
@@ -47,12 +47,14 @@ public class GrupoService {
         return mapper.toGrupoDtoList(grupos);
     }
 
+    @Transactional
     public void crearGrupo(GrupoAddDto dto) {
         Grupo grupo = mapper.toEntity(dto);
         grupo.setDueño(usuarioRepo.findById(dto.getIdDueño()).orElseThrow());
         grupoRepo.save(grupo);
     }
 
+    @Transactional
     public void modificarGrupo(Integer id, GrupoUpdateDto dto) {
         if (grupoRepo.existsById(id)) {
             Grupo grupoModificado = mapper.toEntity(dto);
@@ -62,6 +64,7 @@ public class GrupoService {
         }
     }
 
+    @Transactional
     public void eliminarGrupo(Integer id) {
         if (grupoRepo.existsById(id)) {
             grupoRepo.deleteById(id);
@@ -70,6 +73,7 @@ public class GrupoService {
         }
     }
 
+    @Transactional
     public void agregarUsuarioAGrupo(Integer idGrupo, String idUsuario) {
         Grupo grupo = grupoRepo.findById(idGrupo).orElseThrow();
         Usuario usuario = usuarioRepo.findById(idUsuario).orElseThrow();

@@ -11,9 +11,11 @@ import com.proyecto.g2.equipay.repositories.IPagoRepository;
 import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PagoService {
@@ -95,12 +97,15 @@ public class PagoService {
         return mapper.toPagoDtoList(pagos);
     }
 
+    @Transactional
     public void crearPago(PagoAddDto dto) {
         Pago pago = mapper.toEntity(dto);
+        pago.setMonto(Precision.round(dto.getMonto(), 2));
         pagoRepo.save(pago);
         balanceService.reajustarBalancePorPago(dto);
     }
 
+    @Transactional
     public void eliminarPago(Integer id) {
         if (pagoRepo.existsById(id)) {
             pagoRepo.deleteById(id);
