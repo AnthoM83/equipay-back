@@ -1,27 +1,77 @@
 package com.proyecto.g2.equipay.services;
 
-import com.proyecto.g2.equipay.commons.dtos.RegistrarUsuarioDto;
-import com.proyecto.g2.equipay.models.EstadoUsuario;
+import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioAddDto;
+import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDto;
+import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioUpdateDto;
+import com.proyecto.g2.equipay.commons.enums.EstadoUsuario;
+import com.proyecto.g2.equipay.commons.mappers.UsuarioMapper;
 import com.proyecto.g2.equipay.models.Usuario;
 import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
+import jakarta.persistence.EntityExistsException;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UsuarioService
-        implements IUsuarioService {
+public class UsuarioService {
 
+    // Dependencias
     @Autowired
-    IUsuarioRepository repo;
+    IUsuarioRepository usuarioRepo;
+    @Autowired
+    UsuarioMapper mapper;
 
-    public void registrarUsuario(RegistrarUsuarioDto dto) {
-        Usuario usuario = new Usuario();
-        usuario.setCorreo(dto.getCorreo());
+    // Métodos
+    public UsuarioDto buscarUsuario(String id) {
+        Usuario usuario = usuarioRepo.findById(id).orElseThrow();
+        return mapper.toUsuarioDto(usuario);
+    }
+
+    public List<UsuarioDto> listarUsuarios() {
+        List<Usuario> usuarios = usuarioRepo.findAll();
+        return mapper.toUsuarioDtoList(usuarios);
+    }
+
+    public void crearUsuario(UsuarioAddDto dto) {
+        Optional<Usuario> find = usuarioRepo.findById(dto.getCorreo());
+        if (find.isEmpty()) {
+            Usuario usuario = mapper.toEntity(dto);
+            usuario.setEstadoUsuario(EstadoUsuario.ACTIVO);
+            usuarioRepo.save(usuario);
+        } else {
+            throw new EntityExistsException();
+        }
+    }
+
+    public void modificarUsuario(String id, UsuarioUpdateDto dto) {
+        Usuario usuario = usuarioRepo.findById(id).orElseThrow();
         usuario.setNombre(dto.getNombre());
-        usuario.setApellido(dto.getApellido());
-        usuario.setPassword(dto.getPassword());
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            usuario.setPassword(dto.getPassword());
+        }
+        usuarioRepo.save(usuario);
+    }
+
+    public void eliminarUsuario(String id) {
+        if (usuarioRepo.existsById(id)) {
+            usuarioRepo.deleteById(id);
+        } else {
+            throw new NoSuchElementException();
+        }
+    }
+
+    public void bloquearUsuario(String id) {
+        Usuario usuario = usuarioRepo.findById(id).orElseThrow();
+        usuario.setEstadoUsuario(EstadoUsuario.BLOQUEADO);
+        usuarioRepo.save(usuario);
+    }
+
+    public void desbloquearUsuario(String id) {
+        Usuario usuario = usuarioRepo.findById(id).orElseThrow();
         usuario.setEstadoUsuario(EstadoUsuario.ACTIVO);
-        repo.save(usuario);
+        usuarioRepo.save(usuario);
     }
 
 }

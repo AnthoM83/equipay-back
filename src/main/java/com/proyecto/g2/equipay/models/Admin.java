@@ -4,11 +4,13 @@ import jakarta.persistence.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
+@SuperBuilder
 @Entity
-public class Administrador extends UsuarioBase {
-
+public class Admin
+        extends UsuarioBase {
 }

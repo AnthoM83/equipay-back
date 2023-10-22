@@ -2,16 +2,17 @@ package com.proyecto.g2.equipay.models;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+@SuperBuilder
 @MappedSuperclass
 public abstract class UsuarioBase {
-    
+
+    // Propiedades
     @Id
     private String correo;
     private String nombre;
