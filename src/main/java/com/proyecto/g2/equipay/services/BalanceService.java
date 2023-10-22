@@ -72,6 +72,17 @@ public class BalanceService {
         return mapper.toBalanceDtoList(balances);
     }
 
+    public List<BalanceDto> listarBalancesDeOtrosEnGrupo(String usuarioId, Integer grupoId) {
+        Grupo grupo = grupoRepo.findById(grupoId).orElseThrow();
+        Balance balance = Balance.builder()
+                .grupo(grupo)
+                .build();
+        Example example = Example.of(balance);
+        List<Balance> balances = balanceRepo.findAll(example);
+        balances.removeIf(balanceFilter -> (balanceFilter.getUsuario().getCorreo().equals(usuarioId)));
+        return mapper.toBalanceDtoList(balances);
+    }
+
     protected void crearBalance(Balance balance) {
         balanceRepo.save(balance);
     }
@@ -88,6 +99,7 @@ public class BalanceService {
         Grupo grupo = grupoRepo.findById(dto.getIdGrupo()).orElseThrow();
         Usuario cubiertoPor = usuarioRepo.findById(dto.getIdCubiertoPor()).orElseThrow();
         List<Usuario> beneficiados = usuarioRepo.findAllById(dto.getIdBeneficiados());
+        Double valorACadaBeneficiado = dto.getMonto() / dto.getIdBeneficiados().size();
 
         Balance balanceCubiertoPor;
         List<Balance> optionalBalanceCubiertoPor = balanceRepo.findAll(
@@ -130,7 +142,7 @@ public class BalanceService {
                 balanceBeneficiado = optionalBalanceBeneficiado.get(0);
             }
             Double deudaBeneficiado = balanceBeneficiado.getDeuda();
-            deudaBeneficiado += dto.getMonto();
+            deudaBeneficiado += valorACadaBeneficiado;
             balanceBeneficiado.setDeuda(deudaBeneficiado);
             balanceRepo.save(balanceBeneficiado);
         });
