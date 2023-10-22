@@ -17,6 +17,10 @@ public class CategoriaService {
     ICategoriaRepository repo;
 
     // Métodos
+    public Boolean existeCategoria(Integer id) {
+        return repo.existsById(id);
+    }
+    
     public Categoria buscarCategoria(Integer id) {
         return repo.findById(id).orElseThrow();
     }

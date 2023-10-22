@@ -7,6 +7,7 @@ import com.proyecto.g2.equipay.commons.dtos.deuda.Sugerencia;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public class DeudaService {
 
         aFavorOtros.removeIf(filter -> (Double.compare(filter.getDeuda(), 0) > 0));
 
-        Comparator mayorAMenor = Comparator.comparingDouble(BalanceDto::getDeuda).reversed();
+        Comparator mayorAMenor = Comparator.comparingDouble(BalanceDto::getDeuda);
         aFavorOtros.sort(mayorAMenor);
 
         List<DeudaDto> deudas = new ArrayList<>();
@@ -41,6 +42,7 @@ public class DeudaService {
             deuda.setMoneda(moneda);
             deuda.setSugerencias(new ArrayList<>());
             Double restanteAPagar = deudaConsultado.getDeuda();
+            deuda.setDeudaEnGrupo(Precision.round(restanteAPagar, 2));
             for (BalanceDto otro : aFavorOtros) {
                 Double pagoEnEstaIteracion;
                 if (otro.getMoneda().equals(moneda) && restanteAPagar != 0.0) {

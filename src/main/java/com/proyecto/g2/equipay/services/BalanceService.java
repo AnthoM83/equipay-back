@@ -12,9 +12,11 @@ import com.proyecto.g2.equipay.repositories.IGrupoRepository;
 import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BalanceService {
@@ -83,10 +85,12 @@ public class BalanceService {
         return mapper.toBalanceDtoList(balances);
     }
 
+    @Transactional
     protected void crearBalance(Balance balance) {
         balanceRepo.save(balance);
     }
 
+    @Transactional
     protected void eliminarBalance(Integer id) {
         if (balanceRepo.existsById(id)) {
             balanceRepo.deleteById(id);
@@ -95,11 +99,12 @@ public class BalanceService {
         }
     }
 
+    @Transactional
     protected void reajustarBalancePorGasto(GastoAddDto dto) {
         Grupo grupo = grupoRepo.findById(dto.getIdGrupo()).orElseThrow();
         Usuario cubiertoPor = usuarioRepo.findById(dto.getIdCubiertoPor()).orElseThrow();
         List<Usuario> beneficiados = usuarioRepo.findAllById(dto.getIdBeneficiados());
-        Double valorACadaBeneficiado = dto.getMonto() / dto.getIdBeneficiados().size();
+        Double valorACadaBeneficiado = dto.getMonto() / (dto.getIdBeneficiados().size() + 1);
 
         Balance balanceCubiertoPor;
         List<Balance> optionalBalanceCubiertoPor = balanceRepo.findAll(
@@ -120,7 +125,7 @@ public class BalanceService {
         }
         Double deudaCubiertoPor = balanceCubiertoPor.getDeuda();
         deudaCubiertoPor -= dto.getMonto();
-        balanceCubiertoPor.setDeuda(deudaCubiertoPor);
+        balanceCubiertoPor.setDeuda(Precision.round(deudaCubiertoPor, 2));
         balanceRepo.save(balanceCubiertoPor);
 
         beneficiados.forEach(beneficiado -> {
@@ -143,11 +148,12 @@ public class BalanceService {
             }
             Double deudaBeneficiado = balanceBeneficiado.getDeuda();
             deudaBeneficiado += valorACadaBeneficiado;
-            balanceBeneficiado.setDeuda(deudaBeneficiado);
+            balanceBeneficiado.setDeuda(Precision.round(deudaBeneficiado, 2));
             balanceRepo.save(balanceBeneficiado);
         });
     }
 
+    @Transactional
     protected void reajustarBalancePorPago(PagoAddDto dto) {
         Grupo grupo = grupoRepo.findById(dto.getIdGrupo()).orElseThrow();
         Usuario realiza = usuarioRepo.findById(dto.getIdRealiza()).orElseThrow();
@@ -172,7 +178,7 @@ public class BalanceService {
         }
         Double deudaRealiza = balanceRealiza.getDeuda();
         deudaRealiza -= dto.getMonto();
-        balanceRealiza.setDeuda(deudaRealiza);
+        balanceRealiza.setDeuda(Precision.round(deudaRealiza, 2));
         balanceRepo.save(balanceRealiza);
 
         Balance balanceRecibe;
@@ -194,7 +200,7 @@ public class BalanceService {
         }
         Double deudaRecibe = balanceRecibe.getDeuda();
         deudaRecibe -= dto.getMonto();
-        balanceRecibe.setDeuda(deudaRecibe);
+        balanceRecibe.setDeuda(Precision.round(deudaRecibe, 2));
         balanceRepo.save(balanceRecibe);
     }
 

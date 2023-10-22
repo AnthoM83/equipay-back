@@ -17,7 +17,7 @@ public class DeudaController {
     DeudaService service;
 
     // Métodos
-    @GetMapping("/")
+    @GetMapping
     public ConsultarDeudasDto consultarDeudasDeUsuarioEnGrupo(@RequestParam String idUsuario, @RequestParam Integer idGrupo) {
         return service.consultarDeudasDeUsuarioEnGrupo(idGrupo, idUsuario);
     }
