@@ -9,6 +9,8 @@ import com.proyecto.g2.equipay.models.Usuario;
 import com.proyecto.g2.equipay.repositories.IGrupoRepository;
 import com.proyecto.g2.equipay.repositories.IPagoRepository;
 import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.apache.commons.math3.util.Precision;
@@ -95,6 +97,14 @@ public class PagoService {
         Example example = Example.of(pago);
         List<Pago> pagos = pagoRepo.findAll(example);
         return mapper.toPagoDtoList(pagos);
+    }
+    
+    public List<PagoDto> listarPagosDeUsuarioEnGrupo(String usuarioId, Integer grupoId) {
+        List<PagoDto> pagosRecibidos = this.listarPagosRecibidosPorUsuarioEnGrupo(usuarioId, grupoId);
+        List<PagoDto> pagosRealizados = this.listarPagosRealizadosPorUsuarioEnGrupo(usuarioId, grupoId);
+        pagosRecibidos.addAll(pagosRealizados);
+        Collections.sort(pagosRecibidos, Comparator.comparing(PagoDto::getId));
+        return pagosRecibidos; // + realizados
     }
 
     @Transactional

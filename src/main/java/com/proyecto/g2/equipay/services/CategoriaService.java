@@ -20,7 +20,7 @@ public class CategoriaService {
     public Boolean existeCategoria(Integer id) {
         return repo.existsById(id);
     }
-    
+
     public Categoria buscarCategoria(Integer id) {
         return repo.findById(id).orElseThrow();
     }

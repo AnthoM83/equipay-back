@@ -1,10 +1,14 @@
 package com.proyecto.g2.equipay.controllers;
 
+import com.proyecto.g2.equipay.commons.dtos.gasto.GastoDto;
 import com.proyecto.g2.equipay.commons.dtos.grupo.AgregarUsuarioAGrupoDto;
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoAddDto;
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoDto;
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoUpdateDto;
+import com.proyecto.g2.equipay.commons.dtos.pago.PagoDto;
+import com.proyecto.g2.equipay.services.GastoService;
 import com.proyecto.g2.equipay.services.GrupoService;
+import com.proyecto.g2.equipay.services.PagoService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -27,23 +31,27 @@ public class GrupoController {
 
     // Dependencias
     @Autowired
-    GrupoService service;
+    GrupoService grupoService;
+    @Autowired
+    GastoService gastoService;
+    @Autowired
+    PagoService pagoService;
 
     // Métodos
     @GetMapping("/{id}")
     public GrupoDto buscarGrupo(@PathVariable Integer id) {
-        return service.buscarGrupo(id);
+        return grupoService.buscarGrupo(id);
     }
 
     @GetMapping("/")
     public List<GrupoDto> listarGrupos() {
-        return service.listarGrupos();
+        return grupoService.listarGrupos();
     }
 
     @PostMapping("/")
     public void crearGrupo(@Valid @RequestBody GrupoAddDto dto) {
         try {
-            service.crearGrupo(dto);
+            grupoService.crearGrupo(dto);
         } catch (EntityExistsException exc) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT, "El grupo ya existe.", exc);
@@ -53,7 +61,7 @@ public class GrupoController {
     @PutMapping("/{id}")
     public void modificarGrupo(@PathVariable Integer id, @Valid @RequestBody GrupoUpdateDto dto) {
         try {
-            service.modificarGrupo(id, dto);
+            grupoService.modificarGrupo(id, dto);
         } catch (NoSuchElementException exc) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Grupo no encontrado.", exc);
@@ -63,7 +71,7 @@ public class GrupoController {
     @DeleteMapping("/{id}")
     public void eliminarGrupo(@PathVariable Integer id) {
         try {
-            service.eliminarGrupo(id);
+            grupoService.eliminarGrupo(id);
         } catch (NoSuchElementException exc) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Grupo no encontrado.", exc);
@@ -73,7 +81,47 @@ public class GrupoController {
     @PostMapping("/{id}/usuarios")
     public void agregarUsuarioAGrupo(@PathVariable Integer id, @Valid @RequestBody AgregarUsuarioAGrupoDto dto) {
         try {
-            service.agregarUsuarioAGrupo(id, dto.getIdUsuario());
+            grupoService.agregarUsuarioAGrupo(id, dto.getIdUsuario());
+        } catch (NoSuchElementException exc) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Grupo no encontrado.", exc);
+        }
+    }
+
+    @GetMapping("/{id}/gastos")
+    public List<GastoDto> gastosEnGrupo(@PathVariable Integer id) {
+        try {
+            return gastoService.listarGastosEnGrupo(id);
+        } catch (NoSuchElementException exc) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Grupo no encontrado.", exc);
+        }
+    }
+
+    @GetMapping("/{id}/gastos/{idUsuario}")
+    public List<GastoDto> gastosEnGrupo(@PathVariable Integer id, @PathVariable String idUsuario) {
+        try {
+            return gastoService.listarGastosDeUsuarioEnGrupo(idUsuario, id);
+        } catch (NoSuchElementException exc) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Grupo no encontrado.", exc);
+        }
+    }
+
+    @GetMapping("/{id}/pagos")
+    public List<PagoDto> pagosEnGrupo(@PathVariable Integer id) {
+        try {
+            return pagoService.listarPagosEnGrupo(id);
+        } catch (NoSuchElementException exc) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Grupo no encontrado.", exc);
+        }
+    }
+
+    @GetMapping("/{id}/pagos/{idUsuario}")
+    public List<PagoDto> pagosEnGrupo(@PathVariable Integer id, @PathVariable String idUsuario) {
+        try {
+            return pagoService.listarPagosDeUsuarioEnGrupo(idUsuario, id);
         } catch (NoSuchElementException exc) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Grupo no encontrado.", exc);
