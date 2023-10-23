@@ -51,6 +51,7 @@ public class UsuarioService {
     public void modificarUsuario(String id, UsuarioUpdateDto dto) {
         Usuario usuario = usuarioRepo.findById(id).orElseThrow();
         usuario.setNombre(dto.getNombre());
+        usuario.setApellido(dto.getApellido());
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
             usuario.setPassword(dto.getPassword());
         }

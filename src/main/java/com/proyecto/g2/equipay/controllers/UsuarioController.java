@@ -6,6 +6,7 @@ import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioUpdateDto;
 import com.proyecto.g2.equipay.services.GrupoService;
 import com.proyecto.g2.equipay.services.UsuarioService;
+import com.proyecto.g2.equipay.services.SeguridadUsuarioService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -51,6 +52,8 @@ public class UsuarioController {
     @PostMapping("/")
     public void crearUsuario(@Valid @RequestBody UsuarioAddDto dto) {
         try {
+            String passwordEncoded = SeguridadUsuarioService.encodePassword(dto.getPassword());
+            dto.setPassword(passwordEncoded);
             service.crearUsuario(dto);
         } catch (EntityExistsException exc) {
             throw new ResponseStatusException(
@@ -61,6 +64,10 @@ public class UsuarioController {
     @PutMapping("/{id}")
     public void modificarUsuario(@PathVariable String id, @Valid @RequestBody UsuarioUpdateDto dto) {
         try {
+            if (!dto.getPassword().isBlank() || !dto.getPassword().isEmpty()) {
+                String passwordEncoded = SeguridadUsuarioService.encodePassword(dto.getPassword());
+                dto.setPassword(passwordEncoded);
+            }
             service.modificarUsuario(id, dto);
         } catch (NoSuchElementException exc) {
             throw new ResponseStatusException(
