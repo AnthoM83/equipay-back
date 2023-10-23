@@ -9,11 +9,15 @@ import com.proyecto.g2.equipay.models.Usuario;
 import com.proyecto.g2.equipay.repositories.IGrupoRepository;
 import com.proyecto.g2.equipay.repositories.IPagoRepository;
 import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PagoService {
@@ -94,13 +98,24 @@ public class PagoService {
         List<Pago> pagos = pagoRepo.findAll(example);
         return mapper.toPagoDtoList(pagos);
     }
+    
+    public List<PagoDto> listarPagosDeUsuarioEnGrupo(String usuarioId, Integer grupoId) {
+        List<PagoDto> pagosRecibidos = this.listarPagosRecibidosPorUsuarioEnGrupo(usuarioId, grupoId);
+        List<PagoDto> pagosRealizados = this.listarPagosRealizadosPorUsuarioEnGrupo(usuarioId, grupoId);
+        pagosRecibidos.addAll(pagosRealizados);
+        Collections.sort(pagosRecibidos, Comparator.comparing(PagoDto::getId));
+        return pagosRecibidos; // + realizados
+    }
 
+    @Transactional
     public void crearPago(PagoAddDto dto) {
         Pago pago = mapper.toEntity(dto);
+        pago.setMonto(Precision.round(dto.getMonto(), 2));
         pagoRepo.save(pago);
         balanceService.reajustarBalancePorPago(dto);
     }
 
+    @Transactional
     public void eliminarPago(Integer id) {
         if (pagoRepo.existsById(id)) {
             pagoRepo.deleteById(id);

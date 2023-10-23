@@ -12,6 +12,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AdminService {
@@ -33,6 +34,7 @@ public class AdminService {
         return mapper.toAdminDtoList(admins);
     }
 
+    @Transactional
     public void crearAdmin(AdminAddDto dto) {
         Optional<Admin> find = repo.findById(dto.getCorreo());
         if (find.isEmpty()) {
@@ -43,6 +45,7 @@ public class AdminService {
         }
     }
 
+    @Transactional
     public void modificarAdmin(String id, AdminUpdateDto dto) {
         if (repo.existsById(id)) {
             Admin adminModificado = mapper.toEntity(dto);
@@ -52,6 +55,7 @@ public class AdminService {
         }
     }
 
+    @Transactional
     public void eliminarAdmin(String id) {
         if (repo.existsById(id)) {
             repo.deleteById(id);
