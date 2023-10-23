@@ -32,24 +32,24 @@ public class DataInitializer {
 
     @EventListener
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        
+
         if (svcCategoria.existeCategoria(1)) {
             return;
         }
-        
+
         // Categorías
         svcCategoria.crearCategoria(new Categoria(1, "Comida"));
         svcCategoria.crearCategoria(new Categoria(2, "Supermercado"));
         svcCategoria.crearCategoria(new Categoria(3, "Transporte"));
         svcCategoria.crearCategoria(new Categoria(4, "Viaje"));
         svcCategoria.crearCategoria(new Categoria(5, "Combustible"));
-        
+
         // Admins
         svcAdmin.crearAdmin(new AdminAddDto("admin@equipay.com", "admin", null, "1234"));
         svcAdmin.crearAdmin(new AdminAddDto("admin2@equipay.com", "admin2", null, "1234"));
         svcAdmin.crearAdmin(new AdminAddDto("admin3@equipay.com", "admin3", null, "1234"));
         svcAdmin.crearAdmin(new AdminAddDto("admin-con-apellido@equipay.com", "admin", "apellidoadmin", "1234"));
-        
+
         // Usuario
         svcUsuario.crearUsuario(new UsuarioAddDto("sofia.perez@mail.com", "Sofia", "Perez", "1234"));
         svcUsuario.crearUsuario(new UsuarioAddDto("alejandro.perez@mail.com", "Alejandro", "Perez", "1234"));
@@ -71,7 +71,7 @@ public class DataInitializer {
         svcUsuario.crearUsuario(new UsuarioAddDto("ignacio@mail.com", "Ignacio", null, "1234"));
         svcUsuario.crearUsuario(new UsuarioAddDto("maria@mail.com", "Maria", null, "1234"));
         svcUsuario.crearUsuario(new UsuarioAddDto("juan.manuel@mail.com", "Juan Manuel", null, "1234"));
-        
+
         // Grupos
         svcGrupo.crearGrupo(new GrupoAddDto("Juntos son dinamita", null, "alejandro.perez@mail.com"));
         svcGrupo.crearGrupo(new GrupoAddDto("Paseos", "Grupo para paseos a cualquier lado", "sofia.perez@mail.com"));
@@ -87,13 +87,13 @@ public class DataInitializer {
         svcGrupo.agregarUsuarioAGrupo(3, "sara@mail.com");
         svcGrupo.agregarUsuarioAGrupo(3, "ignacio@mail.com");
         svcGrupo.agregarUsuarioAGrupo(3, "maria@mail.com");
-        
+
         // Gastos
         svcGasto.crearGasto(new GastoAddDto(1300.50, "UYU", "La Pasiva", LocalDate.parse("2023-10-20"), 1, "alejandro.perez@mail.com", Arrays.asList("eduardo.martinez@mail.com", "matias.sanchez@mail.com"), 1));
         svcGasto.crearGasto(new GastoAddDto(800.0, "UYU", "Nafta", LocalDate.parse("2023-10-20"), 1, "alejandro.perez@mail.com", Arrays.asList("eduardo.martinez@mail.com", "matias.sanchez@mail.com"), 1));
         svcGasto.crearGasto(new GastoAddDto(5460.30, "USD", "Pasajes a Noruega", LocalDate.parse("2023-10-20"), 1, "alejandro.perez@mail.com", Arrays.asList("eduardo.martinez@mail.com", "matias.sanchez@mail.com", "leonardo.villa@mail.com"), 1));
         svcGasto.crearGasto(new GastoAddDto(1800.15, "UYU", "Rudy Burger", LocalDate.parse("2023-10-10"), 1, "eduardo.martinez@mail.com", Arrays.asList("alejandro.perez@mail.com", "matias.sanchez@mail.com", "leonardo.villa@mail.com"), 1));
-        
+
         // Pagos
         svcPago.crearPago(new PagoAddDto(1150.21, "UYU", LocalDate.parse("2023-10-21"), 1, "matias.sanchez@mail.com", "alejandro.perez@mail.com"));
     }
