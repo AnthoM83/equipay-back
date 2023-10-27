@@ -29,9 +29,6 @@ public class DataInitializer {
     PagoService svcPago;
     @Autowired
     CategoriaService svcCategoria;
-    @Autowired
-    SeguridadUsuarioService svcSeguridad;
-
     @EventListener
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
@@ -55,26 +52,26 @@ public class DataInitializer {
         // Usuario
         //Seguridad contraseña, se genera la contraseña arriba para todos igual, pero se cifra en cada instancia nueva para que genere un salt aleatorio
         String password = "1234";
-        svcUsuario.crearUsuario(new UsuarioAddDto("sofia.perez@mail.com", "Sofia", "Perez", svcSeguridad.encodePassword(password)));
-        svcUsuario.crearUsuario(new UsuarioAddDto("alejandro.perez@mail.com", "Alejandro", "Perez", svcSeguridad.encodePassword(password)));
-        svcUsuario.crearUsuario(new UsuarioAddDto("veronica.lopez@mail.com", "Veronica", "Lopez", svcSeguridad.encodePassword(password)));
-        svcUsuario.crearUsuario(new UsuarioAddDto("eduardo.martinez@mail.com", "Eduardo", "Martinez", svcSeguridad.encodePassword(password)));
-        svcUsuario.crearUsuario(new UsuarioAddDto("agustina.montes@mail.com", "Agustina", "Montes", svcSeguridad.encodePassword(password)));
-        svcUsuario.crearUsuario(new UsuarioAddDto("matias.sanchez@mail.com", "Matias", "Sanchez", svcSeguridad.encodePassword(password)));
-        svcUsuario.crearUsuario(new UsuarioAddDto("cecilia.estrella@mail.com", "Cecilia", "Estrella", svcSeguridad.encodePassword(password)));
-        svcUsuario.crearUsuario(new UsuarioAddDto("leonardo.villa@mail.com", "Leonardo", "Villa", svcSeguridad.encodePassword(password)));
-        svcUsuario.crearUsuario(new UsuarioAddDto("victoria.montano@mail.com", "Victoria", "Montano", svcSeguridad.encodePassword(password)));
-        svcUsuario.crearUsuario(new UsuarioAddDto("lucas.fagundez@mail.com", "Lucas", "Fagundez", svcSeguridad.encodePassword(password)));
-        svcUsuario.crearUsuario(new UsuarioAddDto("agustin@mail.com", "Agustin", null, svcSeguridad.encodePassword(password)));
-        svcUsuario.crearUsuario(new UsuarioAddDto("brian@mail.com", "Brian", null, svcSeguridad.encodePassword(password)));
-        svcUsuario.crearUsuario(new UsuarioAddDto("lucia@mail.com", "Lucia", null, svcSeguridad.encodePassword(password)));
-        svcUsuario.crearUsuario(new UsuarioAddDto("leandro@mail.com", "Leandro", null, svcSeguridad.encodePassword(password)));
-        svcUsuario.crearUsuario(new UsuarioAddDto("romina@mail.com", "Romina", null, svcSeguridad.encodePassword(password)));
-        svcUsuario.crearUsuario(new UsuarioAddDto("diego@mail.com", "Diego", null, svcSeguridad.encodePassword(password)));
-        svcUsuario.crearUsuario(new UsuarioAddDto("sara@mail.com", "Sara", null, svcSeguridad.encodePassword(password)));
-        svcUsuario.crearUsuario(new UsuarioAddDto("ignacio@mail.com", "Ignacio", null, svcSeguridad.encodePassword(password)));
-        svcUsuario.crearUsuario(new UsuarioAddDto("maria@mail.com", "Maria", null, svcSeguridad.encodePassword(password)));
-        svcUsuario.crearUsuario(new UsuarioAddDto("juan.manuel@mail.com", "Juan Manuel", null, svcSeguridad.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("sofia.perez@mail.com", "Sofia", "Perez", svcUsuario.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("alejandro.perez@mail.com", "Alejandro", "Perez", svcUsuario.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("veronica.lopez@mail.com", "Veronica", "Lopez", svcUsuario.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("eduardo.martinez@mail.com", "Eduardo", "Martinez", svcUsuario.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("agustina.montes@mail.com", "Agustina", "Montes", svcUsuario.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("matias.sanchez@mail.com", "Matias", "Sanchez", svcUsuario.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("cecilia.estrella@mail.com", "Cecilia", "Estrella", svcUsuario.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("leonardo.villa@mail.com", "Leonardo", "Villa", svcUsuario.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("victoria.montano@mail.com", "Victoria", "Montano", svcUsuario.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("lucas.fagundez@mail.com", "Lucas", "Fagundez", svcUsuario.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("agustin@mail.com", "Agustin", null, svcUsuario.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("brian@mail.com", "Brian", null, svcUsuario.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("lucia@mail.com", "Lucia", null, svcUsuario.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("leandro@mail.com", "Leandro", null, svcUsuario.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("romina@mail.com", "Romina", null, svcUsuario.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("diego@mail.com", "Diego", null, svcUsuario.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("sara@mail.com", "Sara", null, svcUsuario.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("ignacio@mail.com", "Ignacio", null, svcUsuario.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("maria@mail.com", "Maria", null, svcUsuario.encodePassword(password)));
+        svcUsuario.crearUsuario(new UsuarioAddDto("juan.manuel@mail.com", "Juan Manuel", null, svcUsuario.encodePassword(password)));
 
         // Grupos
         svcGrupo.crearGrupo(new GrupoAddDto("Juntos son dinamita", null, "alejandro.perez@mail.com"));

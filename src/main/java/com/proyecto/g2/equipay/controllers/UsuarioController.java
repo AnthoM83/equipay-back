@@ -4,15 +4,17 @@ import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioAddDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioUpdateDto;
+import com.proyecto.g2.equipay.models.Usuario;
 import com.proyecto.g2.equipay.services.GrupoService;
 import com.proyecto.g2.equipay.services.UsuarioService;
-import com.proyecto.g2.equipay.services.SeguridadUsuarioService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,7 +54,7 @@ public class UsuarioController {
     @PostMapping("/")
     public void crearUsuario(@Valid @RequestBody UsuarioAddDto dto) {
         try {
-            String passwordEncoded = SeguridadUsuarioService.encodePassword(dto.getPassword());
+            String passwordEncoded = UsuarioService.encodePassword(dto.getPassword());
             dto.setPassword(passwordEncoded);
             service.crearUsuario(dto);
         } catch (EntityExistsException exc) {
@@ -65,7 +67,7 @@ public class UsuarioController {
     public void modificarUsuario(@PathVariable String id, @Valid @RequestBody UsuarioUpdateDto dto) {
         try {
             if (!dto.getPassword().isBlank() || !dto.getPassword().isEmpty()) {
-                String passwordEncoded = SeguridadUsuarioService.encodePassword(dto.getPassword());
+                String passwordEncoded = UsuarioService.encodePassword(dto.getPassword());
                 dto.setPassword(passwordEncoded);
             }
             service.modificarUsuario(id, dto);
@@ -95,4 +97,19 @@ public class UsuarioController {
         }
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody String id, String password) {
+        try {
+            String token = service.iniciarSesion(id, password);
+            return ResponseEntity.ok(token);
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error de autenticación");
+        }
+    }
+
+    @GetMapping("/logout")
+    public String cerrarSesion() {
+        // Implementa la lógica para cerrar sesión
+        return "redirige-a-pagina-de-login";
+    }
 }
