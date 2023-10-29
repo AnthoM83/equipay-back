@@ -4,8 +4,6 @@ import com.proyecto.g2.equipay.commons.dtos.gasto.GastoAddDto;
 import com.proyecto.g2.equipay.commons.dtos.gasto.GastoDto;
 import com.proyecto.g2.equipay.commons.dtos.gasto.GastoUpdateDto;
 import com.proyecto.g2.equipay.commons.mappers.GastoMapper;
-import com.proyecto.g2.equipay.commons.specifications.GastoSpecifications;
-import static com.proyecto.g2.equipay.commons.specifications.GastoSpecifications.hasUsuarioEnGrupo;
 import com.proyecto.g2.equipay.models.Gasto;
 import com.proyecto.g2.equipay.models.Grupo;
 import com.proyecto.g2.equipay.models.Usuario;

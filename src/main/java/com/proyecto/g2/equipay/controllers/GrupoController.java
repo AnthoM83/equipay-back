@@ -3,6 +3,7 @@ package com.proyecto.g2.equipay.controllers;
 import com.proyecto.g2.equipay.commons.dtos.gasto.GastoDto;
 import com.proyecto.g2.equipay.commons.dtos.grupo.*;
 import com.proyecto.g2.equipay.commons.dtos.pago.PagoDto;
+import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDto;
 import com.proyecto.g2.equipay.services.GastoService;
 import com.proyecto.g2.equipay.services.GrupoService;
 import com.proyecto.g2.equipay.services.PagoService;
@@ -113,6 +114,16 @@ public class GrupoController {
     public List<PagoDto> pagosEnGrupo(@PathVariable Integer id, @PathVariable String idUsuario) {
         try {
             return pagoService.listarPagosDeUsuarioEnGrupo(idUsuario, id);
+        } catch (NoSuchElementException exc) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Grupo no encontrado.", exc);
+        }
+    }
+
+    @GetMapping("/{id}/usuarios")
+    public List<UsuarioDto> usuariosEnGrupo(@PathVariable Integer id) {
+        try {
+            return grupoService.listarUsuariosEnGrupo(id);
         } catch (NoSuchElementException exc) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Grupo no encontrado.", exc);
