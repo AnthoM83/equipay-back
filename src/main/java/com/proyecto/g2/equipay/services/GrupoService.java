@@ -8,12 +8,14 @@ import com.proyecto.g2.equipay.models.Grupo;
 import com.proyecto.g2.equipay.models.Usuario;
 import com.proyecto.g2.equipay.repositories.IGrupoRepository;
 import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
-import java.util.List;
-import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class GrupoService {
@@ -51,6 +53,7 @@ public class GrupoService {
     public void crearGrupo(GrupoAddDto dto) {
         Grupo grupo = mapper.toEntity(dto);
         grupo.setDueño(usuarioRepo.findById(dto.getIdDueño()).orElseThrow());
+        grupo.setFechaCreacion(LocalDate.now());
         grupoRepo.save(grupo);
     }
 

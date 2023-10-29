@@ -1,18 +1,19 @@
 package com.proyecto.g2.equipay.commons.helpers;
 
-import com.proyecto.g2.equipay.commons.dtos.admin.*;
+import com.proyecto.g2.equipay.commons.dtos.admin.AdminAddDto;
 import com.proyecto.g2.equipay.commons.dtos.gasto.GastoAddDto;
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoAddDto;
 import com.proyecto.g2.equipay.commons.dtos.pago.PagoAddDto;
-import com.proyecto.g2.equipay.commons.dtos.usuario.*;
-import com.proyecto.g2.equipay.models.*;
+import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioAddDto;
+import com.proyecto.g2.equipay.models.Categoria;
 import com.proyecto.g2.equipay.services.*;
-import java.time.LocalDate;
-import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.util.Arrays;
 
 @Component
 public class DataInitializer {
@@ -77,9 +78,9 @@ public class DataInitializer {
         svcUsuario.crearUsuario(new UsuarioAddDto("juan.manuel@mail.com", "Juan Manuel", null, svcSeguridad.encodePassword(password)));
 
         // Grupos
-        svcGrupo.crearGrupo(new GrupoAddDto("Juntos son dinamita", null, "alejandro.perez@mail.com"));
+        svcGrupo.crearGrupo(new GrupoAddDto("Juntos son dinamita", "Gastos en gral.", "alejandro.perez@mail.com"));
         svcGrupo.crearGrupo(new GrupoAddDto("Paseos", "Grupo para paseos a cualquier lado", "sofia.perez@mail.com"));
-        svcGrupo.crearGrupo(new GrupoAddDto("Juntadas", null, "sofia.perez@mail.com"));
+        svcGrupo.crearGrupo(new GrupoAddDto("Juntadas", "Gastos de juntada", "sofia.perez@mail.com"));
 
         // Añadir miembros a grupos
         svcGrupo.agregarUsuarioAGrupo(1, "eduardo.martinez@mail.com");
