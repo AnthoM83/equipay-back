@@ -2,6 +2,7 @@ package com.proyecto.g2.equipay.services;
 
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoAddDto;
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoDto;
+import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoDtoFull;
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoUpdateDto;
 import com.proyecto.g2.equipay.commons.mappers.GrupoMapper;
 import com.proyecto.g2.equipay.models.Grupo;
@@ -29,9 +30,9 @@ public class GrupoService {
     GrupoMapper mapper;
 
     // Métodos
-    public GrupoDto buscarGrupo(Integer id) {
+    public GrupoDtoFull buscarGrupo(Integer id) {
         Grupo grupo = grupoRepo.findById(id).orElseThrow();
-        return mapper.toGrupoDto(grupo);
+        return mapper.toGrupoDtoFull(grupo);
     }
 
     public List<GrupoDto> listarGrupos() {
