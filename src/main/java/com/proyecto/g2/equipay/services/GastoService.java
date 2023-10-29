@@ -23,6 +23,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import static com.proyecto.g2.equipay.commons.specifications.GastoSpecifications.hasUsuarioComoBeneficiado;
+import com.proyecto.g2.equipay.repositories.ICategoriaRepository;
+import java.util.ArrayList;
 
 @Service
 public class GastoService {
@@ -36,6 +38,8 @@ public class GastoService {
     IUsuarioRepository usuarioRepo;
     @Autowired
     IGrupoRepository grupoRepo;
+    @Autowired
+    ICategoriaRepository categoriaRepo;
     @Autowired
     GastoMapper mapper;
 
@@ -107,6 +111,14 @@ public class GastoService {
     public void crearGasto(GastoAddDto dto) {
         Gasto gasto = mapper.toEntity(dto);
         gasto.setMonto(Precision.round(dto.getMonto(), 2));
+        gasto.setGrupo(grupoRepo.findById(dto.getIdGrupo()).orElseThrow());
+        gasto.setCubiertoPor(usuarioRepo.findById(dto.getIdCubiertoPor()).orElseThrow());
+        List<Usuario> beneficiados = new ArrayList<>();
+        for (String idBeneficiado : dto.getIdBeneficiados()) {
+            beneficiados.add(usuarioRepo.findById(idBeneficiado).orElseThrow());
+        }
+        gasto.setBeneficiados(beneficiados);
+        gasto.setCategoria(categoriaRepo.findById(dto.getIdCategoria()).orElseThrow());
         gastoRepo.save(gasto);
         balanceService.reajustarBalancePorGasto(dto);
     }
@@ -114,8 +126,9 @@ public class GastoService {
     @Transactional
     public void modificarGasto(Integer id, GastoUpdateDto dto) {
         if (gastoRepo.existsById(id)) {
-            Gasto gastoModificado = mapper.toEntity(dto);
-            gastoRepo.save(gastoModificado);
+            Gasto gasto = gastoRepo.findById(id).orElseThrow();
+            gasto.setDescripcion(dto.getDescripcion());
+            gastoRepo.save(gasto);
         } else {
             throw new NoSuchElementException();
         }
