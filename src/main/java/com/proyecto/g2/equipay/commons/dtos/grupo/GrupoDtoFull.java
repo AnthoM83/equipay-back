@@ -1,9 +1,11 @@
 package com.proyecto.g2.equipay.commons.dtos.grupo;
 
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -14,6 +16,7 @@ public class GrupoDtoFull {
     private Integer id;
     private String nombre;
     private String descripcion;
+    private LocalDate fechaCreacion;
 
     // Asociaciones
     private String idDueño;
