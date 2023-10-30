@@ -42,9 +42,9 @@ public class Gasto {
     private Usuario cubiertoPor;
 
     @ManyToMany
-    @JoinTable(name = "beneficiado_gasto",
+    @JoinTable(name = "beneficiados",
             joinColumns = @JoinColumn(name = "gasto_id"),
-            inverseJoinColumns = @JoinColumn(name = "beneficiado_id"))
+            inverseJoinColumns = @JoinColumn(name = "beneficiado_correo"))
     private List<Usuario> beneficiados;
 
     @ManyToOne
