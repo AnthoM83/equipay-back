@@ -1,5 +1,6 @@
 package com.proyecto.g2.equipay.commons.dtos.pago;
 
+import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDto;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +19,6 @@ public class PagoDto {
 
     // Asociaciones
     private Integer idGrupo;
-    private String idRealiza;
-    private String idRecibe;
+    private UsuarioDto realiza;
+    private UsuarioDto recibe;
 }

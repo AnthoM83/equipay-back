@@ -16,8 +16,10 @@ public interface GastoMapper {
     Gasto toEntity(GastoUpdateDto dto);
 
     @Mapping(source = "gasto.grupo.id", target = "idGrupo")
-    @Mapping(source = "gasto.cubiertoPor.correo", target = "idCubiertoPor")
-    @Mapping(source = "gasto.beneficiados", target = "idBeneficiados")
+    @Mapping(source = "gasto.cubiertoPor.correo", target = "cubiertoPor.correo")
+    @Mapping(source = "gasto.cubiertoPor.nombre", target = "cubiertoPor.nombre")
+    @Mapping(source = "gasto.cubiertoPor.apellido", target = "cubiertoPor.apellido")
+    @Mapping(source = "gasto.beneficiados", target = "beneficiados")
     @Mapping(source = "gasto.categoria.id", target = "idCategoria")
     GastoDto toGastoDto(Gasto gasto);
 
