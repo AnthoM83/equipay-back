@@ -1,5 +1,6 @@
 package com.proyecto.g2.equipay.commons.dtos.gasto;
 
+import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDto;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,7 @@ public class GastoDto {
 
     // Asociaciones
     private Integer idGrupo;
-    private String idCubiertoPor;
-    private List<String> idBeneficiados;
+    private UsuarioDto cubiertoPor;
+    private List<UsuarioDto> beneficiados;
     private Integer idCategoria;
 }

@@ -2,18 +2,25 @@ package com.proyecto.g2.equipay.services;
 
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoAddDto;
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoDto;
+import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoDtoFull;
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoUpdateDto;
+import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDto;
 import com.proyecto.g2.equipay.commons.mappers.GrupoMapper;
+import com.proyecto.g2.equipay.commons.mappers.UsuarioMapper;
+import static com.proyecto.g2.equipay.commons.specifications.UsuarioSpecifications.hasGrupo;
 import com.proyecto.g2.equipay.models.Grupo;
 import com.proyecto.g2.equipay.models.Usuario;
 import com.proyecto.g2.equipay.repositories.IGrupoRepository;
 import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
-import java.util.List;
-import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.NoSuchElementException;
+import org.springframework.data.jpa.domain.Specification;
 
 @Service
 public class GrupoService {
@@ -25,11 +32,13 @@ public class GrupoService {
     IUsuarioRepository usuarioRepo;
     @Autowired
     GrupoMapper mapper;
+    @Autowired
+    UsuarioMapper usuarioMapper;
 
     // Métodos
-    public GrupoDto buscarGrupo(Integer id) {
+    public GrupoDtoFull buscarGrupo(Integer id) {
         Grupo grupo = grupoRepo.findById(id).orElseThrow();
-        return mapper.toGrupoDto(grupo);
+        return mapper.toGrupoDtoFull(grupo);
     }
 
     public List<GrupoDto> listarGrupos() {
@@ -46,11 +55,27 @@ public class GrupoService {
         List<Grupo> grupos = grupoRepo.findAll(example);
         return mapper.toGrupoDtoList(grupos);
     }
+    
+    public List<UsuarioDto> listarMiembrosEnGrupo(Integer id) {
+        Specification<Usuario> specification = hasGrupo(id);
+        List<Usuario> usuariosEnGrupo = usuarioRepo.findAll(specification);
+        return usuarioMapper.toUsuarioDtoList(usuariosEnGrupo);
+    }
+    
+    public List<UsuarioDto> listarUsuariosEnGrupo(Integer id) {
+        Specification<Usuario> specification = hasGrupo(id);
+        List<Usuario> usuariosEnGrupo = usuarioRepo.findAll(specification);
+        Grupo grupo = grupoRepo.findById(id).orElseThrow();
+        Usuario dueño = grupo.getDueño();
+        usuariosEnGrupo.add(dueño);
+        return usuarioMapper.toUsuarioDtoList(usuariosEnGrupo);
+    }
 
     @Transactional
     public void crearGrupo(GrupoAddDto dto) {
         Grupo grupo = mapper.toEntity(dto);
         grupo.setDueño(usuarioRepo.findById(dto.getIdDueño()).orElseThrow());
+        grupo.setFechaCreacion(LocalDate.now());
         grupoRepo.save(grupo);
     }
 

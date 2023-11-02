@@ -32,7 +32,7 @@ public class Usuario
     @OneToMany(mappedBy = "cubiertoPor")
     private List<Gasto> gastosCubiertos;
 
-    @OneToMany(mappedBy = "beneficiados")
+    @ManyToMany(mappedBy = "beneficiados")
     private List<Gasto> beneficiadoEn;
 
     @OneToMany(mappedBy = "realiza")

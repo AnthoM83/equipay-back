@@ -111,6 +111,9 @@ public class PagoService {
     public void crearPago(PagoAddDto dto) {
         Pago pago = mapper.toEntity(dto);
         pago.setMonto(Precision.round(dto.getMonto(), 2));
+        pago.setGrupo(grupoRepo.findById(dto.getIdGrupo()).orElseThrow());
+        pago.setRealiza(usuarioRepo.findById(dto.getIdRealiza()).orElseThrow());
+        pago.setRecibe(usuarioRepo.findById(dto.getIdRecibe()).orElseThrow());
         pagoRepo.save(pago);
         balanceService.reajustarBalancePorPago(dto);
     }
