@@ -30,17 +30,9 @@ public class DeudaService {
 
         List<BalanceDto> deudasConsultado = balanceService.listarBalancesDeUsuarioEnGrupo(idUsuario, idGrupo);
         List<BalanceDto> aFavorOtros = balanceService.listarBalancesDeOtrosEnGrupo(idUsuario, idGrupo);
-
-        deudasConsultado.removeIf(filter -> (Double.compare(filter.getDeuda(), 0) < 0));
-        if (deudasConsultado.isEmpty()) {
-            return dto; // No tiene deudas
-        }
-
         aFavorOtros.removeIf(filter -> (Double.compare(filter.getDeuda(), 0) > 0));
-
         Comparator mayorAMenor = Comparator.comparingDouble(BalanceDto::getDeuda);
         aFavorOtros.sort(mayorAMenor);
-
         List<DeudaDto> deudas = new ArrayList<>();
         deudasConsultado.forEach(deudaConsultado -> {
             String moneda = deudaConsultado.getMoneda();
