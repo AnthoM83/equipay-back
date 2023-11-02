@@ -61,7 +61,7 @@ public class DeudaService {
                         pagoEnEstaIteracion = restanteAPagar;
                         restanteAPagar = 0.0;
                     }
-                    Sugerencia sugerencia = new Sugerencia(new UsuarioDto(otroUsuario.getCorreo(), otroUsuario.getNombre(), otroUsuario.getApellido()), pagoEnEstaIteracion);
+                    Sugerencia sugerencia = new Sugerencia(new UsuarioDto(otroUsuario.getCorreo(), otroUsuario.getNombre(), otroUsuario.getApellido()), pagoEnEstaIteracion, otro.getMoneda());
                     deuda.getSugerencias().add(sugerencia);
                 }
             }

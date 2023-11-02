@@ -12,4 +12,5 @@ public class Sugerencia {
 
     private UsuarioDto usuario;
     private Double monto;
+    private String moneda;
 }
