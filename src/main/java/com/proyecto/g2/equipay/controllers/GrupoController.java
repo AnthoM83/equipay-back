@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/grupos")
@@ -41,6 +42,7 @@ public class GrupoController {
     }
 
     @PostMapping("/")
+    @PreAuthorize("hasAuthority('ROLE_USUARIO')") 
     public void crearGrupo(@Valid @RequestBody GrupoAddDto dto) {
         try {
             grupoService.crearGrupo(dto);
