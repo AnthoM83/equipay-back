@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +24,11 @@ public class UsuarioService implements UserDetailsService {
 
     // Dependencias
     @Autowired
-    IUsuarioRepository usuarioRepo;
+    protected IUsuarioRepository usuarioRepo;
     @Autowired
     UsuarioMapper mapper;
+    @Autowired
+    PasswordEncoder encoder;
 
     // Métodos
     public UsuarioDto buscarUsuario(String id) {
@@ -43,6 +46,7 @@ public class UsuarioService implements UserDetailsService {
         Optional<Usuario> find = usuarioRepo.findById(dto.getCorreo());
         if (find.isEmpty()) {
             Usuario usuario = mapper.toEntity(dto);
+            usuario.setPassword(encoder.encode(dto.getPassword()));
             usuario.setEstadoUsuario(EstadoUsuario.ACTIVO);
             usuarioRepo.save(usuario);
         } else {
@@ -85,11 +89,11 @@ public class UsuarioService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String correo) throws UsernameNotFoundException {
-        Optional<Usuario> userDetail = usuarioRepo.findById(correo);
-        // Converting userDetail to UserDetails 
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<Usuario> userDetail = usuarioRepo.findById(username);
+        // Converting userDetail to UserDetails
         return userDetail.map(UserInfoDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado " + correo));
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado " + username));
     }
 
 }

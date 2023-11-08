@@ -52,8 +52,6 @@ public class UsuarioController {
     @PostMapping("/")
     public void crearUsuario(@Valid @RequestBody UsuarioAddDto dto) {
         try {
-            String passwordEncoded = SeguridadUsuarioService.encodePassword(dto.getPassword());
-            dto.setPassword(passwordEncoded);
             service.crearUsuario(dto);
         } catch (EntityExistsException exc) {
             throw new ResponseStatusException(
@@ -64,10 +62,6 @@ public class UsuarioController {
     @PutMapping("/{id}")
     public void modificarUsuario(@PathVariable String id, @Valid @RequestBody UsuarioUpdateDto dto) {
         try {
-            if (!dto.getPassword().isBlank() || !dto.getPassword().isEmpty()) {
-                String passwordEncoded = SeguridadUsuarioService.encodePassword(dto.getPassword());
-                dto.setPassword(passwordEncoded);
-            }
             service.modificarUsuario(id, dto);
         } catch (NoSuchElementException exc) {
             throw new ResponseStatusException(

@@ -37,8 +37,6 @@ public class AuthController {
     @PostMapping("/registro")
     public void crearUsuario(@Valid @RequestBody UsuarioAddDto dto) {
         try {
-            String passwordEncoded = SeguridadUsuarioService.encodePassword(dto.getPassword());
-            dto.setPassword(passwordEncoded);
             service.crearUsuario(dto);
         } catch (EntityExistsException exc) {
             throw new ResponseStatusException(
@@ -48,8 +46,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-        Authentication authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(authRequest.getCorreo(), authRequest.getPassword());
-        Authentication authentication = authenticationManager.authenticate(authenticationRequest);
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getCorreo(), authRequest.getPassword()));
         if (authentication.isAuthenticated()) {
             return jwtService.generateToken(authRequest.getCorreo());
         } else {

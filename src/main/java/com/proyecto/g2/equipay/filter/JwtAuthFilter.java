@@ -19,7 +19,7 @@ import java.io.IOException;
 // This class helps us to validate the generated jwt token 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
-
+    
     @Autowired
     private JwtService jwtService;
 
@@ -27,7 +27,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private UsuarioService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;
