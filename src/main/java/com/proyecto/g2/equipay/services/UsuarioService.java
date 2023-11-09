@@ -1,6 +1,7 @@
 package com.proyecto.g2.equipay.services;
 
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioAddDto;
+import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDetailsDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioUpdateDto;
 import com.proyecto.g2.equipay.commons.enums.EstadoUsuario;
@@ -8,6 +9,7 @@ import com.proyecto.g2.equipay.commons.mappers.UsuarioMapper;
 import com.proyecto.g2.equipay.models.Usuario;
 import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
 import jakarta.persistence.EntityExistsException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -38,6 +40,11 @@ public class UsuarioService {
         return mapper.toUsuarioDtoList(usuarios);
     }
 
+    public List<UsuarioDetailsDto> listarUsuariosDetails() {
+        List<Usuario> usuarios = usuarioRepo.findAll();
+        return mapper.toUsuarioDetailsDtoList(usuarios);
+    }
+
     @Transactional
     public void crearUsuario(UsuarioAddDto dto) {
         Optional<Usuario> find = usuarioRepo.findById(dto.getCorreo());
@@ -45,6 +52,7 @@ public class UsuarioService {
             Usuario usuario = mapper.toEntity(dto);
             usuario.setPassword(encoder.encode(dto.getPassword()));
             usuario.setEstadoUsuario(EstadoUsuario.ACTIVO);
+            usuario.setFechaCreacion(LocalDate.now());
             usuarioRepo.save(usuario);
         } else {
             throw new EntityExistsException();
