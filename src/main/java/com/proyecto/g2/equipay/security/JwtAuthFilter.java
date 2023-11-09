@@ -1,7 +1,5 @@
-package com.proyecto.g2.equipay.filter;
+package com.proyecto.g2.equipay.security;
 
-import com.proyecto.g2.equipay.services.JwtService;
-import com.proyecto.g2.equipay.services.UsuarioService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +22,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private JwtService jwtService;
 
     @Autowired
-    private UsuarioService userDetailsService;
+    private UserInfoService userDetailsService;
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

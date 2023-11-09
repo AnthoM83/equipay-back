@@ -30,8 +30,6 @@ public class DataInitializer {
     PagoService svcPago;
     @Autowired
     CategoriaService svcCategoria;
-    @Autowired
-    SeguridadUsuarioService svcSeguridad;
 
     @EventListener
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -55,7 +53,6 @@ public class DataInitializer {
 
         // Usuario
         //Seguridad contraseña, se genera la contraseña arriba para todos igual, pero se cifra en cada instancia nueva para que genere un salt aleatorio
-        String password = "1234";
         svcUsuario.crearUsuario(new UsuarioAddDto("sofia.perez@mail.com", "Sofia", "Perez", "1234"));
         svcUsuario.crearUsuario(new UsuarioAddDto("alejandro.perez@mail.com", "Alejandro", "Perez", "1234"));
         svcUsuario.crearUsuario(new UsuarioAddDto("veronica.lopez@mail.com", "Veronica", "Lopez", "1234"));

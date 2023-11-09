@@ -2,9 +2,8 @@ package com.proyecto.g2.equipay.controllers;
 
 import com.proyecto.g2.equipay.commons.dtos.security.AuthRequest;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioAddDto;
-import com.proyecto.g2.equipay.services.JwtService;
+import com.proyecto.g2.equipay.security.JwtService;
 import com.proyecto.g2.equipay.services.UsuarioService;
-import com.proyecto.g2.equipay.services.SeguridadUsuarioService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

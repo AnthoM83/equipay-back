@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,8 @@ public class AdminService {
     IAdminRepository repo;
     @Autowired
     AdminMapper mapper;
+    @Autowired
+    PasswordEncoder encoder;
 
     // Métodos
     public AdminDto buscarAdmin(String id) {
@@ -39,6 +42,7 @@ public class AdminService {
         Optional<Admin> find = repo.findById(dto.getCorreo());
         if (find.isEmpty()) {
             Admin admin = mapper.toEntity(dto);
+            admin.setPassword(encoder.encode(dto.getPassword()));
             repo.save(admin);
         } else {
             throw new EntityExistsException();
@@ -49,6 +53,9 @@ public class AdminService {
     public void modificarAdmin(String id, AdminUpdateDto dto) {
         if (repo.existsById(id)) {
             Admin adminModificado = mapper.toEntity(dto);
+            if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+                adminModificado.setPassword(encoder.encode(dto.getPassword()));
+            }
             repo.save(adminModificado);
         } else {
             throw new NoSuchElementException();

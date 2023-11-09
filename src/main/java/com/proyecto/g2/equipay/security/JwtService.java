@@ -1,4 +1,4 @@
-package com.proyecto.g2.equipay.services;
+package com.proyecto.g2.equipay.security;
 
 import com.proyecto.g2.equipay.models.Admin;
 import com.proyecto.g2.equipay.models.Usuario;

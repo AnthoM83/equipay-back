@@ -12,15 +12,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class UsuarioService implements UserDetailsService {
+public class UsuarioService {
 
     // Dependencias
     @Autowired
@@ -60,7 +57,7 @@ public class UsuarioService implements UserDetailsService {
         usuario.setNombre(dto.getNombre());
         usuario.setApellido(dto.getApellido());
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-            usuario.setPassword(dto.getPassword());
+            usuario.setPassword(encoder.encode(dto.getPassword()));
         }
         usuarioRepo.save(usuario);
     }
@@ -86,14 +83,6 @@ public class UsuarioService implements UserDetailsService {
         Usuario usuario = usuarioRepo.findById(id).orElseThrow();
         usuario.setEstadoUsuario(EstadoUsuario.ACTIVO);
         usuarioRepo.save(usuario);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Usuario> userDetail = usuarioRepo.findById(username);
-        // Converting userDetail to UserDetails
-        return userDetail.map(UserInfoDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado " + username));
     }
 
 }

@@ -1,9 +1,6 @@
-package com.proyecto.g2.equipay.config;
+package com.proyecto.g2.equipay.security;
 
-import com.proyecto.g2.equipay.filter.JwtAuthFilter;
-import com.proyecto.g2.equipay.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,7 +12,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -31,25 +27,21 @@ public class SecurityConfig {
 
     @Autowired
     private JwtAuthFilter authFilter;
-    
-    @Autowired
-    private ApplicationContext applicationContext;
 
-    // User Creation 
-    public UserDetailsService userDetailsService() {
-        return new UsuarioService();
-    }
+    @Autowired
+    private UserInfoService userDetailsService;
+   
 
     // Configuring HttpSecurity 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> {
-//            auth.requestMatchers("/api/auth/login", "/api/auth/registro").anonymous();
-//            auth.requestMatchers("/v3/**", "/swagger-ui/**", "/api-docs/**").permitAll();
-            auth.anyRequest().permitAll();
+            auth.requestMatchers("/api/auth/login", "/api/auth/registro").anonymous();
+            auth.requestMatchers("/v3/**", "/swagger-ui/**", "/api-docs/**").permitAll();
+            auth.anyRequest().authenticated();
         });
         http.csrf(csrf -> {
-//            csrf.ignoringRequestMatchers("/api/auth/login", "/api/auth/registro");
+            csrf.ignoringRequestMatchers("/api/auth/login", "/api/auth/registro");
 csrf.ignoringRequestMatchers("/**");
         });
         http.sessionManagement(sessionmgmt -> {
@@ -69,14 +61,13 @@ csrf.ignoringRequestMatchers("/**");
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userDetailsService());
+        authenticationProvider.setUserDetailsService(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        config.setApplicationContext(applicationContext);
         return config.getAuthenticationManager();
     }
 

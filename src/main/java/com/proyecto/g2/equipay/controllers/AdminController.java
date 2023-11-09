@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,7 @@ public class AdminController {
 
     // Métodos
     @GetMapping("/admins/{id}")
+    @PreAuthorize("hasAuthority('Admin')")
     public AdminDto buscarAdmin(@PathVariable String id) {
         try {
             return service.buscarAdmin(id);
@@ -40,11 +42,13 @@ public class AdminController {
     }
 
     @GetMapping("/admins")
+    @PreAuthorize("hasAuthority('Admin')")
     public List<AdminDto> listarAdmins() {
         return service.listarAdmins();
     }
 
     @PostMapping("/admins")
+    @PreAuthorize("hasAuthority('Admin')")
     public void crearAdmin(@Valid @RequestBody AdminAddDto dto) {
         try {
             service.crearAdmin(dto);
@@ -55,6 +59,7 @@ public class AdminController {
     }
 
     @PutMapping("/admins/{id}")
+    @PreAuthorize("hasAuthority('Admin')")
     public void modificarAdmin(@PathVariable String id, @Valid @RequestBody AdminUpdateDto dto) {
         try {
             service.modificarAdmin(id, dto);
@@ -65,6 +70,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/admins/{id}")
+    @PreAuthorize("hasAuthority('Admin')")
     public void eliminarAdmin(@PathVariable String id) {
         try {
             service.eliminarAdmin(id);
