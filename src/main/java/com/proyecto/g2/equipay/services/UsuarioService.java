@@ -6,8 +6,12 @@ import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioUpdateDto;
 import com.proyecto.g2.equipay.commons.enums.EstadoUsuario;
 import com.proyecto.g2.equipay.commons.mappers.UsuarioMapper;
 import com.proyecto.g2.equipay.models.Usuario;
+import com.proyecto.g2.equipay.models.UsuarioBase;
 import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
 import jakarta.persistence.EntityExistsException;
+import com.proyecto.g2.equipay.services.EmailService;
+
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -23,6 +27,13 @@ public class UsuarioService {
     IUsuarioRepository usuarioRepo;
     @Autowired
     UsuarioMapper mapper;
+
+    @Autowired
+    EmailService emailService;
+
+    private static final String CARACTERES = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_+=<>?";
+
+    private static final int LONGITUD_CONTRASENA = 12;
 
     // Métodos
     public UsuarioDto buscarUsuario(String id) {
@@ -79,6 +90,36 @@ public class UsuarioService {
         Usuario usuario = usuarioRepo.findById(id).orElseThrow();
         usuario.setEstadoUsuario(EstadoUsuario.ACTIVO);
         usuarioRepo.save(usuario);
+    }
+
+// ...
+
+    public void recuperarContrasena(String correo) {
+        // Genera una nueva contraseña segura
+        String nuevaContrasena = generarContrasenaSegura();
+
+        // Actualiza la contraseña en la base de datos
+        Usuario usuario = usuarioRepo.findById(correo).orElseThrow();
+        usuario.setPassword(nuevaContrasena);
+
+        usuarioRepo.save(usuario);
+
+        // Envía un correo electrónico al usuario con la nueva contraseña
+        String mensaje = "Tu nueva contraseña es: " + nuevaContrasena;
+        emailService.enviarCorreo(usuario.getCorreo(), "Recuperación de Contraseña", mensaje);
+    }
+
+    public static String generarContrasenaSegura() {
+        SecureRandom random = new SecureRandom();
+        StringBuilder contrasena = new StringBuilder(LONGITUD_CONTRASENA);
+
+        for (int i = 0; i < LONGITUD_CONTRASENA; i++) {
+            int indice = random.nextInt(CARACTERES.length());
+            char caracter = CARACTERES.charAt(indice);
+            contrasena.append(caracter);
+        }
+
+        return contrasena.toString();
     }
 
 }

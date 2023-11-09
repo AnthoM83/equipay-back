@@ -55,7 +55,7 @@ public class EmailControllerTest {
 
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
     }
-    
+
 }
 
 
