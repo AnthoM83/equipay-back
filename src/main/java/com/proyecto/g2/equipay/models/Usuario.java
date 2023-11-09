@@ -44,4 +44,8 @@ public class Usuario
     @OneToMany(mappedBy = "usuario")
     private List<Balance> balances;
 
+    public static String getRoles() {
+        return "Usuario";
+    }
+    
 }

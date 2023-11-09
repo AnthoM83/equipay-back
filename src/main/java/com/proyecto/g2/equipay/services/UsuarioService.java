@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +21,11 @@ public class UsuarioService {
 
     // Dependencias
     @Autowired
-    IUsuarioRepository usuarioRepo;
+    protected IUsuarioRepository usuarioRepo;
     @Autowired
     UsuarioMapper mapper;
+    @Autowired
+    PasswordEncoder encoder;
 
     // Métodos
     public UsuarioDto buscarUsuario(String id) {
@@ -40,6 +43,7 @@ public class UsuarioService {
         Optional<Usuario> find = usuarioRepo.findById(dto.getCorreo());
         if (find.isEmpty()) {
             Usuario usuario = mapper.toEntity(dto);
+            usuario.setPassword(encoder.encode(dto.getPassword()));
             usuario.setEstadoUsuario(EstadoUsuario.ACTIVO);
             usuarioRepo.save(usuario);
         } else {
@@ -53,7 +57,7 @@ public class UsuarioService {
         usuario.setNombre(dto.getNombre());
         usuario.setApellido(dto.getApellido());
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-            usuario.setPassword(dto.getPassword());
+            usuario.setPassword(encoder.encode(dto.getPassword()));
         }
         usuarioRepo.save(usuario);
     }

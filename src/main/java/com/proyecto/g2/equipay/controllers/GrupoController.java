@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/grupos")
@@ -41,6 +42,7 @@ public class GrupoController {
     }
 
     @PostMapping("/")
+    @PreAuthorize("hasAuthority('Usuario')") 
     public void crearGrupo(@Valid @RequestBody GrupoAddDto dto) {
         try {
             grupoService.crearGrupo(dto);
@@ -51,6 +53,7 @@ public class GrupoController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('Usuario')") 
     public void modificarGrupo(@PathVariable Integer id, @Valid @RequestBody GrupoUpdateDto dto) {
         try {
             grupoService.modificarGrupo(id, dto);
@@ -61,6 +64,7 @@ public class GrupoController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('Usuario')")
     public void eliminarGrupo(@PathVariable Integer id) {
         try {
             grupoService.eliminarGrupo(id);
@@ -71,6 +75,7 @@ public class GrupoController {
     }
 
     @PostMapping("/{id}/usuarios")
+    @PreAuthorize("hasAuthority('Usuario')")
     public void agregarUsuarioAGrupo(@PathVariable Integer id, @Valid @RequestBody AgregarUsuarioAGrupoDto dto) {
         try {
             grupoService.agregarUsuarioAGrupo(id, dto.getIdUsuario());
@@ -81,6 +86,7 @@ public class GrupoController {
     }
 
     @GetMapping("/{id}/gastos")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
     public List<GastoDto> gastosEnGrupo(@PathVariable Integer id) {
         try {
             return gastoService.listarGastosEnGrupo(id);
@@ -91,6 +97,7 @@ public class GrupoController {
     }
 
     @GetMapping("/{id}/gastos/{idUsuario}")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
     public List<GastoDto> gastosEnGrupo(@PathVariable Integer id, @PathVariable String idUsuario) {
         try {
             return gastoService.listarGastosDeUsuarioEnGrupo(idUsuario, id);
@@ -101,6 +108,7 @@ public class GrupoController {
     }
 
     @GetMapping("/{id}/pagos")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
     public List<PagoDto> pagosEnGrupo(@PathVariable Integer id) {
         try {
             return pagoService.listarPagosEnGrupo(id);
@@ -111,6 +119,7 @@ public class GrupoController {
     }
 
     @GetMapping("/{id}/pagos/{idUsuario}")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
     public List<PagoDto> pagosEnGrupo(@PathVariable Integer id, @PathVariable String idUsuario) {
         try {
             return pagoService.listarPagosDeUsuarioEnGrupo(idUsuario, id);
@@ -121,6 +130,7 @@ public class GrupoController {
     }
 
     @GetMapping("/{id}/usuarios")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
     public List<UsuarioDto> usuariosEnGrupo(@PathVariable Integer id) {
         try {
             return grupoService.listarUsuariosEnGrupo(id);

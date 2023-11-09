@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +30,7 @@ public class GastoController {
 
     // Métodos
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('Admin')")
     public GastoDto buscarGasto(@PathVariable Integer id) {
         try {
             return service.buscarGasto(id);
@@ -39,16 +41,19 @@ public class GastoController {
     }
 
     @GetMapping("/")
+    @PreAuthorize("hasAuthority('Admin')")
     public List<GastoDto> listarGastos() {
         return service.listarGastos();
     }
 
     @PostMapping("/")
+    @PreAuthorize("hasAuthority('Usuario')")
     public void crearGasto(@Valid @RequestBody GastoAddDto dto) {
         service.crearGasto(dto);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('Usuario')")
     public void modificarGasto(@PathVariable Integer id, @Valid @RequestBody GastoUpdateDto dto) {
         try {
             service.modificarGasto(id, dto);
@@ -59,6 +64,7 @@ public class GastoController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('Usuario')")
     public void eliminarGasto(@PathVariable Integer id) {
         try {
             service.eliminarGasto(id);
