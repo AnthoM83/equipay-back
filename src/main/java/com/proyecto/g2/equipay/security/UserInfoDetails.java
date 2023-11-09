@@ -1,5 +1,6 @@
 package com.proyecto.g2.equipay.security;
 
+import com.proyecto.g2.equipay.models.Admin;
 import com.proyecto.g2.equipay.models.Usuario;
 import com.proyecto.g2.equipay.models.UsuarioBase;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,7 +21,8 @@ public class UserInfoDetails implements UserDetails {
     public UserInfoDetails(UsuarioBase usuario) {
         name = usuario.getCorreo();
         password = usuario.getPassword();
-        authorities = Arrays.stream(Usuario.getRoles().split(","))
+        String rolesArray = usuario instanceof Usuario ? Usuario.getRoles() : Admin.getRoles();
+        authorities = Arrays.stream(rolesArray.split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }

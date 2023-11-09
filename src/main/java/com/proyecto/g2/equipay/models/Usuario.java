@@ -5,6 +5,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,6 +22,7 @@ public class Usuario
 
     // Propiedades
     private EstadoUsuario estadoUsuario;
+    private LocalDate fechaCreacion;
 
     // Asociaciones
     @OneToMany(mappedBy = "dueño", cascade = CascadeType.ALL, orphanRemoval = true)

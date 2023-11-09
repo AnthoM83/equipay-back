@@ -2,6 +2,7 @@ package com.proyecto.g2.equipay.controllers;
 
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioAddDto;
+import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDetailsDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioUpdateDto;
 import com.proyecto.g2.equipay.services.GrupoService;
@@ -49,6 +50,12 @@ public class UsuarioController {
     @PreAuthorize("hasAuthority('Admin')")
     public List<UsuarioDto> listarUsuarios() {
         return service.listarUsuarios();
+    }
+
+    @GetMapping("/detalles")
+    @PreAuthorize("hasAuthority('Admin')")
+    public List<UsuarioDetailsDto> listarUsuariosDetails() {
+        return service.listarUsuariosDetails();
     }
 
     @PostMapping("/")

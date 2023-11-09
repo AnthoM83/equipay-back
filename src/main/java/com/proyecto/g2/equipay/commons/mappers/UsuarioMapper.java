@@ -1,6 +1,7 @@
 package com.proyecto.g2.equipay.commons.mappers;
 
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioAddDto;
+import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDetailsDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioFullDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioUpdateDto;
@@ -23,6 +24,10 @@ public interface UsuarioMapper {
     UsuarioFullDto toUsuarioFullDto(Usuario usuario);
 
     List<UsuarioFullDto> toUsuarioFullDtoList(List<Usuario> usuarios);
+    
+    UsuarioDetailsDto toUsuarioDetailsDto(Usuario usuario);
+    
+    List<UsuarioDetailsDto> toUsuarioDetailsDtoList(List<Usuario> usuario);
 
     default List<String> map(List<Usuario> usuarios) {
         List<String> list = new ArrayList<>();
