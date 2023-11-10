@@ -11,4 +11,5 @@ public class AuthRequest {
 
     private String correo;
     private String password;
+    private String expoPushToken;
 }

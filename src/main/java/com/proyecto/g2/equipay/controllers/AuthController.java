@@ -8,9 +8,11 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,17 +41,23 @@ public class AuthController {
             service.crearUsuario(dto);
         } catch (EntityExistsException exc) {
             throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "El usuario ya existe.", exc);
+                    HttpStatus.CONFLICT, "El correo ingresado ya existe.", exc);
         }
     }
 
     @PostMapping("/login")
-    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getCorreo(), authRequest.getPassword()));
-        if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(authRequest.getCorreo());
-        } else {
-            throw new UsernameNotFoundException("Login inválido.");
+    public ResponseEntity<String> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getCorreo(), authRequest.getPassword()));
+
+            if (authentication.isAuthenticated()) {
+                service.saveExpoPushToken(authRequest.getCorreo(), authRequest.getExpoPushToken());
+                return ResponseEntity.ok(jwtService.generateToken(authRequest.getCorreo()));
+            } else {
+                throw new UsernameNotFoundException("Login invalido");
+            }
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("El usuario o la contraseña ingresada no son correctos, vuelva a intentarlo.");
         }
     }
 

@@ -9,14 +9,15 @@ import com.proyecto.g2.equipay.commons.mappers.UsuarioMapper;
 import com.proyecto.g2.equipay.models.Usuario;
 import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
 import jakarta.persistence.EntityExistsException;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -90,6 +91,13 @@ public class UsuarioService {
     public void desbloquearUsuario(String id) {
         Usuario usuario = usuarioRepo.findById(id).orElseThrow();
         usuario.setEstadoUsuario(EstadoUsuario.ACTIVO);
+        usuarioRepo.save(usuario);
+    }
+
+    @Transactional
+    public void saveExpoPushToken(String id, String expoPushToken) {
+        Usuario usuario = usuarioRepo.findById(id).orElseThrow();
+        usuario.setExpoPushToken(expoPushToken);
         usuarioRepo.save(usuario);
     }
 
