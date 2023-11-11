@@ -80,11 +80,6 @@
             <artifactId>commons-math3</artifactId>
             <version>3.6.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-core</artifactId>
-            <version>5.2.2.RELEASE</version>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -105,7 +100,7 @@
         </dependency>
 
 
-        <!--        <dependency>
+      <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
@@ -129,7 +124,7 @@
             <artifactId>jjwt-jackson</artifactId> 
             <version>0.12.2</version> 
         </dependency> 
-        <!--FIN: Dependencias agregadas-->
+
     </dependencies>
     <build>
         <pluginManagement>

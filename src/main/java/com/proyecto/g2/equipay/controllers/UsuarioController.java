@@ -59,7 +59,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/")
-    @PreAuthorize("hasAuthority('Admin')")
+//    @PreAuthorize("hasAuthority('Admin')")
     public void crearUsuario(@Valid @RequestBody UsuarioAddDto dto) {
         try {
             service.crearUsuario(dto);
@@ -100,6 +100,11 @@ public class UsuarioController {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Usuario no encontrado.", exc);
         }
+    }
+
+    @GetMapping("/{id}/contrasena")
+    public void recuperarContrasena(@PathVariable String id) {
+            service.recuperarContrasena(id);
     }
 
 }

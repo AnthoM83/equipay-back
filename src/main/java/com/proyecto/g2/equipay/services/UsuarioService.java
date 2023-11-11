@@ -106,16 +106,13 @@ public class UsuarioService {
     }
 
     public void recuperarContrasena(String correo) {
-        // Genera una nueva contraseña segura
         String nuevaContrasena = generarContrasenaSegura();
 
-        // Actualiza la contraseña en la base de datos
         Usuario usuario = usuarioRepo.findById(correo).orElseThrow();
         usuario.setPassword(nuevaContrasena);
 
         usuarioRepo.save(usuario);
 
-        // Envía un correo electrónico al usuario con la nueva contraseña
         String mensaje = "Tu nueva contraseña es: " + nuevaContrasena;
         emailService.enviarCorreo(usuario.getCorreo(), "Recuperación de Contraseña", mensaje);
     }
