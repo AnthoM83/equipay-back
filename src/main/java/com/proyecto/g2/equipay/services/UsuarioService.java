@@ -1,6 +1,7 @@
 package com.proyecto.g2.equipay.services;
 
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioAddDto;
+import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDetailsDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioUpdateDto;
 import com.proyecto.g2.equipay.commons.enums.EstadoUsuario;
@@ -12,21 +13,26 @@ import jakarta.persistence.EntityExistsException;
 import com.proyecto.g2.equipay.services.EmailService;
 
 import java.security.SecureRandom;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UsuarioService {
 
     // Dependencias
     @Autowired
-    IUsuarioRepository usuarioRepo;
+    protected IUsuarioRepository usuarioRepo;
     @Autowired
     UsuarioMapper mapper;
+    @Autowired
+    PasswordEncoder encoder;
 
     @Autowired
     EmailService emailService;
@@ -46,12 +52,19 @@ public class UsuarioService {
         return mapper.toUsuarioDtoList(usuarios);
     }
 
+    public List<UsuarioDetailsDto> listarUsuariosDetails() {
+        List<Usuario> usuarios = usuarioRepo.findAll();
+        return mapper.toUsuarioDetailsDtoList(usuarios);
+    }
+
     @Transactional
     public void crearUsuario(UsuarioAddDto dto) {
         Optional<Usuario> find = usuarioRepo.findById(dto.getCorreo());
         if (find.isEmpty()) {
             Usuario usuario = mapper.toEntity(dto);
+            usuario.setPassword(encoder.encode(dto.getPassword()));
             usuario.setEstadoUsuario(EstadoUsuario.ACTIVO);
+            usuario.setFechaCreacion(LocalDate.now());
             usuarioRepo.save(usuario);
         } else {
             throw new EntityExistsException();
@@ -64,7 +77,7 @@ public class UsuarioService {
         usuario.setNombre(dto.getNombre());
         usuario.setApellido(dto.getApellido());
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-            usuario.setPassword(dto.getPassword());
+            usuario.setPassword(encoder.encode(dto.getPassword()));
         }
         usuarioRepo.save(usuario);
     }
@@ -92,8 +105,6 @@ public class UsuarioService {
         usuarioRepo.save(usuario);
     }
 
-// ...
-
     public void recuperarContrasena(String correo) {
         // Genera una nueva contraseña segura
         String nuevaContrasena = generarContrasenaSegura();
@@ -120,6 +131,13 @@ public class UsuarioService {
         }
 
         return contrasena.toString();
+    }
+
+    @Transactional
+    public void saveExpoPushToken(String id, String expoPushToken) {
+        Usuario usuario = usuarioRepo.findById(id).orElseThrow();
+        usuario.setExpoPushToken(expoPushToken);
+        usuarioRepo.save(usuario);
     }
 
 }

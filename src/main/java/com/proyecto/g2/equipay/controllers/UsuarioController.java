@@ -2,17 +2,18 @@ package com.proyecto.g2.equipay.controllers;
 
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioAddDto;
+import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDetailsDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioUpdateDto;
 import com.proyecto.g2.equipay.services.GrupoService;
 import com.proyecto.g2.equipay.services.UsuarioService;
-import com.proyecto.g2.equipay.services.SeguridadUsuarioService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +36,7 @@ public class UsuarioController {
 
     // Métodos
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
     public UsuarioDto buscarUsuario(@PathVariable String id) {
         try {
             return service.buscarUsuario(id);
@@ -45,15 +47,21 @@ public class UsuarioController {
     }
 
     @GetMapping("/")
+    @PreAuthorize("hasAuthority('Admin')")
     public List<UsuarioDto> listarUsuarios() {
         return service.listarUsuarios();
     }
 
+    @GetMapping("/detalles")
+    @PreAuthorize("hasAuthority('Admin')")
+    public List<UsuarioDetailsDto> listarUsuariosDetails() {
+        return service.listarUsuariosDetails();
+    }
+
     @PostMapping("/")
+    @PreAuthorize("hasAuthority('Admin')")
     public void crearUsuario(@Valid @RequestBody UsuarioAddDto dto) {
         try {
-            String passwordEncoded = SeguridadUsuarioService.encodePassword(dto.getPassword());
-            dto.setPassword(passwordEncoded);
             service.crearUsuario(dto);
         } catch (EntityExistsException exc) {
             throw new ResponseStatusException(
@@ -62,12 +70,9 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('Admin')")
     public void modificarUsuario(@PathVariable String id, @Valid @RequestBody UsuarioUpdateDto dto) {
         try {
-            if (!dto.getPassword().isBlank() || !dto.getPassword().isEmpty()) {
-                String passwordEncoded = SeguridadUsuarioService.encodePassword(dto.getPassword());
-                dto.setPassword(passwordEncoded);
-            }
             service.modificarUsuario(id, dto);
         } catch (NoSuchElementException exc) {
             throw new ResponseStatusException(
@@ -76,6 +81,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('Admin')")
     public void eliminarUsuario(@PathVariable String id) {
         try {
             service.eliminarUsuario(id);
@@ -86,6 +92,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}/grupos")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
     public List<GrupoDto> listarGrupos(@PathVariable String id) {
         try {
             return grupoService.listarGrupos(id);

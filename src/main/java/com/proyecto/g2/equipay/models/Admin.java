@@ -13,4 +13,8 @@ import lombok.experimental.SuperBuilder;
 @Entity
 public class Admin
         extends UsuarioBase {
+    
+        public static String getRoles() {
+        return "Admin";
+    }
 }

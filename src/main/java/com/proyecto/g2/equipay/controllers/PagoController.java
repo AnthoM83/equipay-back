@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ public class PagoController {
 
     // Métodos
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('Admin')")
     public PagoDto buscarPago(@PathVariable Integer id) {
         try {
             return service.buscarPago(id);
@@ -37,16 +39,19 @@ public class PagoController {
     }
 
     @GetMapping("/")
+    @PreAuthorize("hasAuthority('Admin')")
     public List<PagoDto> listarPagos() {
         return service.listarPagos();
     }
 
     @PostMapping("/")
+    @PreAuthorize("hasAuthority('Usuario')") 
     public void crearPago(@Valid @RequestBody PagoAddDto dto) {
         service.crearPago(dto);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('Usuario')") 
     public void eliminarPago(@PathVariable Integer id) {
         try {
             service.eliminarPago(id);

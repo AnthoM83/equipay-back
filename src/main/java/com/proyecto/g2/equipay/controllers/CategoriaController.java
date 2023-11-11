@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ public class CategoriaController {
 
     // Métodos
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
     public Categoria buscarCategoria(@PathVariable Integer id) {
         try {
             return service.buscarCategoria(id);
@@ -38,11 +40,13 @@ public class CategoriaController {
     }
 
     @GetMapping("/")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
     public List<Categoria> listarCategorias() {
         return service.listarCategorias();
     }
 
     @PostMapping("/")
+    @PreAuthorize("hasAuthority('Admin')")
     public void crearCategoria(@Valid @RequestBody Categoria categoria) {
         try {
             service.crearCategoria(categoria);
@@ -53,6 +57,7 @@ public class CategoriaController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('Admin')")
     public void modificarCategoria(@PathVariable Integer id, @Valid @RequestBody Categoria categoria) {
         try {
             service.modificarCategoria(id, categoria);
@@ -63,6 +68,7 @@ public class CategoriaController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('Admin')")
     public void eliminarCategoria(@PathVariable Integer id) {
         try {
             service.eliminarCategoria(id);
