@@ -9,15 +9,16 @@ import com.proyecto.g2.equipay.models.Usuario;
 import com.proyecto.g2.equipay.repositories.IGrupoRepository;
 import com.proyecto.g2.equipay.repositories.IPagoRepository;
 import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
 import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class PagoService {
@@ -33,6 +34,8 @@ public class PagoService {
     IGrupoRepository grupoRepo;
     @Autowired
     PagoMapper mapper;
+    @Autowired
+    NotificationService notificationService;
 
     // Métodos
     public PagoDto buscarPago(Integer id) {
@@ -116,6 +119,11 @@ public class PagoService {
         pago.setRecibe(usuarioRepo.findById(dto.getIdRecibe()).orElseThrow());
         pagoRepo.save(pago);
         balanceService.reajustarBalancePorPago(dto);
+
+        Usuario destinatario = usuarioRepo.findById(dto.getIdRecibe()).orElseThrow();
+        Usuario remitente = usuarioRepo.findById(dto.getIdRealiza()).orElseThrow();
+        if(destinatario.getExpoPushToken() != null)
+            notificationService.sendNotification(destinatario.getExpoPushToken(), "Has recibido un nuevo pago!", "%s %s te ha hecho un pago por %s %s".formatted(remitente.getNombre(), remitente.getApellido(), dto.getMoneda(), dto.getMonto()));
     }
 
     @Transactional

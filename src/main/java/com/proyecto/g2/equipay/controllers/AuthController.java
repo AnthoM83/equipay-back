@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -36,12 +35,13 @@ public class AuthController {
 
     // Métodos
     @PostMapping("/registro")
-    public void crearUsuario(@Valid @RequestBody UsuarioAddDto dto) {
+    public ResponseEntity<String>crearUsuario(@Valid @RequestBody UsuarioAddDto dto) {
         try {
             service.crearUsuario(dto);
-        } catch (EntityExistsException exc) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "El correo ingresado ya existe.", exc);
+            return ResponseEntity.status(HttpStatus.OK).body("Usuario creado correctamente");
+        }
+        catch (EntityExistsException exc) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("El correo ingresado ya existe. Vuelva a intentarlo");
         }
     }
 
