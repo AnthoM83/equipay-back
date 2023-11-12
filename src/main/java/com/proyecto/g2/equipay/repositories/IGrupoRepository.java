@@ -2,8 +2,9 @@ package com.proyecto.g2.equipay.repositories;
 
 import com.proyecto.g2.equipay.models.Grupo;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface IGrupoRepository
-        extends JpaRepository<Grupo, Integer> {
+        extends JpaRepository<Grupo, Integer>, JpaSpecificationExecutor<Grupo> {
 
 }

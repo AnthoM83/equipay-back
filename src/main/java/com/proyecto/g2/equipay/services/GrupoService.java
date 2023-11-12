@@ -7,6 +7,7 @@ import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoUpdateDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDto;
 import com.proyecto.g2.equipay.commons.mappers.GrupoMapper;
 import com.proyecto.g2.equipay.commons.mappers.UsuarioMapper;
+import static com.proyecto.g2.equipay.commons.specifications.GrupoSpecifications.hasUsuario;
 import static com.proyecto.g2.equipay.commons.specifications.UsuarioSpecifications.hasGrupo;
 import com.proyecto.g2.equipay.models.Grupo;
 import com.proyecto.g2.equipay.models.Usuario;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.data.jpa.domain.Specification;
@@ -53,6 +56,10 @@ public class GrupoService {
                 .build();
         Example example = Example.of(grupo);
         List<Grupo> grupos = grupoRepo.findAll(example);
+        Specification<Grupo> specification = hasUsuario(usuarioId);
+        List<Grupo> gruposMiembro = grupoRepo.findAll(specification);
+        grupos.addAll(gruposMiembro);
+        Collections.sort(grupos, Comparator.comparing(Grupo::getId));
         return mapper.toGrupoDtoList(grupos);
     }
     
@@ -102,6 +109,11 @@ public class GrupoService {
     public void agregarUsuarioAGrupo(Integer idGrupo, String idUsuario) {
         Grupo grupo = grupoRepo.findById(idGrupo).orElseThrow();
         Usuario usuario = usuarioRepo.findById(idUsuario).orElseThrow();
+        Specification<Grupo> specification = hasUsuario(idUsuario);
+        List<Grupo> gruposMiembro = grupoRepo.findAll(specification);
+        if (grupo.getDueño().equals(usuario) || gruposMiembro.contains(grupo)) {
+            throw new IllegalArgumentException();
+        }
         grupo.getMiembros().add(usuario);
         grupoRepo.save(grupo);
     }

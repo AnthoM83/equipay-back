@@ -78,6 +78,7 @@ public class DataInitializer {
         svcGrupo.crearGrupo(new GrupoAddDto("Juntos son dinamita", "Gastos en gral.", "alejandro.perez@mail.com"));
         svcGrupo.crearGrupo(new GrupoAddDto("Paseos", "Grupo para paseos a cualquier lado", "sofia.perez@mail.com"));
         svcGrupo.crearGrupo(new GrupoAddDto("Juntadas", "Gastos de juntada", "sofia.perez@mail.com"));
+        svcGrupo.crearGrupo(new GrupoAddDto("Juntos son dinamita 2", "Gastos en gral.", "matias.sanchez@mail.com"));
 
         // Añadir miembros a grupos
         svcGrupo.agregarUsuarioAGrupo(1, "eduardo.martinez@mail.com");
@@ -89,6 +90,7 @@ public class DataInitializer {
         svcGrupo.agregarUsuarioAGrupo(3, "sara@mail.com");
         svcGrupo.agregarUsuarioAGrupo(3, "ignacio@mail.com");
         svcGrupo.agregarUsuarioAGrupo(3, "maria@mail.com");
+        svcGrupo.agregarUsuarioAGrupo(4, "alejandro.perez@mail.com");
 
         // Gastos
         svcGasto.crearGasto(new GastoAddDto(1300.50, "UYU", "La Pasiva", LocalDate.parse("2023-10-20"), 1, "alejandro.perez@mail.com", Arrays.asList("eduardo.martinez@mail.com", "matias.sanchez@mail.com"), 1));

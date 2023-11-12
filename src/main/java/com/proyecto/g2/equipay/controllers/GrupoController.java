@@ -42,7 +42,7 @@ public class GrupoController {
     }
 
     @PostMapping("/")
-    @PreAuthorize("hasAuthority('Usuario')") 
+    @PreAuthorize("hasAuthority('Usuario')")
     public void crearGrupo(@Valid @RequestBody GrupoAddDto dto) {
         try {
             grupoService.crearGrupo(dto);
@@ -53,7 +53,7 @@ public class GrupoController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('Usuario')") 
+    @PreAuthorize("hasAuthority('Usuario')")
     public void modificarGrupo(@PathVariable Integer id, @Valid @RequestBody GrupoUpdateDto dto) {
         try {
             grupoService.modificarGrupo(id, dto);
@@ -82,6 +82,9 @@ public class GrupoController {
         } catch (NoSuchElementException exc) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Grupo no encontrado.", exc);
+        } catch (IllegalArgumentException exc) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "El usuario elegido ya pertenece al grupo.", exc);
         }
     }
 
