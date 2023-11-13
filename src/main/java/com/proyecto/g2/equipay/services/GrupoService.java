@@ -88,12 +88,10 @@ public class GrupoService {
 
     @Transactional
     public void modificarGrupo(Integer id, GrupoUpdateDto dto) {
-        if (grupoRepo.existsById(id)) {
-            Grupo grupoModificado = mapper.toEntity(dto);
-            grupoRepo.save(grupoModificado);
-        } else {
-            throw new NoSuchElementException();
-        }
+        Grupo grupo = grupoRepo.findById(id).orElseThrow();
+        grupo.setNombre(dto.getNombre());
+        grupo.setDescripcion(dto.getDescripcion());
+        grupoRepo.save(grupo);
     }
 
     @Transactional

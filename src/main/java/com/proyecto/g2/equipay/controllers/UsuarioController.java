@@ -75,7 +75,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('Admin')")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
     public void eliminarUsuario(@PathVariable String id) {
         try {
             service.eliminarUsuario(id);
@@ -90,6 +90,28 @@ public class UsuarioController {
     public List<GrupoDto> listarGrupos(@PathVariable String id) {
         try {
             return grupoService.listarGrupos(id);
+        } catch (NoSuchElementException exc) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Usuario no encontrado.", exc);
+        }
+    }
+
+    @PostMapping("/{id}/bloquear")
+    @PreAuthorize("hasAuthority('Admin')")
+    public void bloquearUsuario(@PathVariable String id) {
+        try {
+            service.bloquearUsuario(id);
+        } catch (NoSuchElementException exc) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Usuario no encontrado.", exc);
+        }
+    }
+
+    @PostMapping("/{id}/desbloquear")
+    @PreAuthorize("hasAuthority('Admin')")
+    public void desbloquearUsuario(@PathVariable String id) {
+        try {
+            service.desbloquearUsuario(id);
         } catch (NoSuchElementException exc) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Usuario no encontrado.", exc);

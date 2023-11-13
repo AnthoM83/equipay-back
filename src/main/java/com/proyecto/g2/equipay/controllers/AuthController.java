@@ -49,9 +49,15 @@ public class AuthController {
     public ResponseEntity<String> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getCorreo(), authRequest.getPassword()));
-
             if (authentication.isAuthenticated()) {
-                service.saveExpoPushToken(authRequest.getCorreo(), authRequest.getExpoPushToken());
+                Boolean isAdmin = false;
+                var authorities = authentication.getAuthorities();
+                for (var authority : authorities) {
+                    if (authority.getAuthority().equals("Admin")) { isAdmin = true; }
+                }
+                if (!isAdmin) {
+                    service.saveExpoPushToken(authRequest.getCorreo(), authRequest.getExpoPushToken());
+                }
                 return ResponseEntity.ok(jwtService.generateToken(authRequest.getCorreo()));
             } else {
                 throw new UsernameNotFoundException("Login invalido");

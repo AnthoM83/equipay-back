@@ -73,11 +73,9 @@ public class UsuarioService {
 
     @Transactional
     public void eliminarUsuario(String id) {
-        if (usuarioRepo.existsById(id)) {
-            usuarioRepo.deleteById(id);
-        } else {
-            throw new NoSuchElementException();
-        }
+        Usuario usuario = usuarioRepo.findById(id).orElseThrow();
+        usuario.setEstadoUsuario(EstadoUsuario.ELIMINADO);
+        usuarioRepo.save(usuario);
     }
 
     @Transactional

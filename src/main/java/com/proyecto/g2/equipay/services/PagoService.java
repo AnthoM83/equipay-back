@@ -101,7 +101,7 @@ public class PagoService {
         List<Pago> pagos = pagoRepo.findAll(example);
         return mapper.toPagoDtoList(pagos);
     }
-    
+
     public List<PagoDto> listarPagosDeUsuarioEnGrupo(String usuarioId, Integer grupoId) {
         List<PagoDto> pagosRecibidos = this.listarPagosRecibidosPorUsuarioEnGrupo(usuarioId, grupoId);
         List<PagoDto> pagosRealizados = this.listarPagosRealizadosPorUsuarioEnGrupo(usuarioId, grupoId);
@@ -122,8 +122,9 @@ public class PagoService {
 
         Usuario destinatario = usuarioRepo.findById(dto.getIdRecibe()).orElseThrow();
         Usuario remitente = usuarioRepo.findById(dto.getIdRealiza()).orElseThrow();
-        if(destinatario.getExpoPushToken() != null)
+        if (destinatario.getExpoPushToken() != null) {
             notificationService.sendNotification(destinatario.getExpoPushToken(), "Has recibido un nuevo pago!", "%s %s te ha hecho un pago por %s %s".formatted(remitente.getNombre(), remitente.getApellido(), dto.getMoneda(), dto.getMonto()));
+        }
     }
 
     @Transactional
@@ -134,4 +135,5 @@ public class PagoService {
             throw new NoSuchElementException();
         }
     }
+
 }
