@@ -30,6 +30,8 @@ public class DataInitializer {
     PagoService svcPago;
     @Autowired
     CategoriaService svcCategoria;
+    @Autowired
+    NotificationService svcNotificacion;
 
     @EventListener
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -98,6 +100,8 @@ public class DataInitializer {
         svcGasto.crearGasto(new GastoAddDto(5460.30, "USD", "Pasajes a Noruega", LocalDate.parse("2023-10-20"), 1, "alejandro.perez@mail.com", Arrays.asList("eduardo.martinez@mail.com", "matias.sanchez@mail.com", "leonardo.villa@mail.com"), 1));
         svcGasto.crearGasto(new GastoAddDto(1800.15, "UYU", "Rudy Burger", LocalDate.parse("2023-10-10"), 1, "eduardo.martinez@mail.com", Arrays.asList("alejandro.perez@mail.com", "matias.sanchez@mail.com", "leonardo.villa@mail.com"), 1));
 
+        //Notificacion
+        svcNotificacion.crearNotificacion("aaa1", "Esto es una notificacion de prueba", "ok", "agustina.montes@mail.com", "sofia");
         // Pagos
         svcPago.crearPago(new PagoAddDto(1150.21, "UYU", LocalDate.parse("2023-10-21"), 1, "matias.sanchez@mail.com", "alejandro.perez@mail.com"));
     }

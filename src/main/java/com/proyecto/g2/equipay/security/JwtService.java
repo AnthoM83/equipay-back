@@ -1,5 +1,6 @@
 package com.proyecto.g2.equipay.security;
 
+import com.proyecto.g2.equipay.commons.enums.EstadoUsuario;
 import com.proyecto.g2.equipay.models.Admin;
 import com.proyecto.g2.equipay.models.Usuario;
 import com.proyecto.g2.equipay.repositories.IAdminRepository;
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @Component
 public class JwtService {
@@ -45,6 +47,9 @@ public class JwtService {
             nombre = usuario.getNombre();
             apellido = usuario.getApellido();
             rol = "Usuario";
+            if (usuario.getEstadoUsuario() == EstadoUsuario.ELIMINADO) {
+                throw new UsernameNotFoundException("Usuario no existe");
+            }
         } else {
             Admin admin = adminRepo.findById(userName).orElseThrow();
             nombre = admin.getNombre();

@@ -1,11 +1,13 @@
 package com.proyecto.g2.equipay.controllers;
 
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoDto;
+import com.proyecto.g2.equipay.commons.dtos.notification.NotificationDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioAddDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDetailsDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioUpdateDto;
 import com.proyecto.g2.equipay.services.GrupoService;
+import com.proyecto.g2.equipay.services.NotificationService;
 import com.proyecto.g2.equipay.services.UsuarioService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.validation.Valid;
@@ -27,6 +29,8 @@ public class UsuarioController {
     UsuarioService service;
     @Autowired
     GrupoService grupoService;
+    @Autowired
+    NotificationService notificationService;
 
     // Métodos
     @GetMapping("/{id}")
@@ -75,7 +79,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('Admin')")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
     public void eliminarUsuario(@PathVariable String id) {
         try {
             service.eliminarUsuario(id);
@@ -93,6 +97,40 @@ public class UsuarioController {
         } catch (NoSuchElementException exc) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Usuario no encontrado.", exc);
+        }
+    }
+
+    @PostMapping("/{id}/bloquear")
+    @PreAuthorize("hasAuthority('Admin')")
+    public void bloquearUsuario(@PathVariable String id) {
+        try {
+            service.bloquearUsuario(id);
+        } catch (NoSuchElementException exc) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Usuario no encontrado.", exc);
+        }
+    }
+
+    @PostMapping("/{id}/desbloquear")
+    @PreAuthorize("hasAuthority('Admin')")
+    public void desbloquearUsuario(@PathVariable String id) {
+        try {
+            service.desbloquearUsuario(id);
+        } catch (NoSuchElementException exc) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Usuario no encontrado.", exc);
+        }
+    }
+
+    @GetMapping("/{id}/notificaciones")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
+    public List<NotificationDto> listarNotificacionesUsuario(@PathVariable String id) {
+        try {
+            return notificationService.listarNotificacionesUsuario(id);
+        }
+        catch (NoSuchElementException exc) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "No existen notificaciones.", exc);
         }
     }
 
