@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -96,6 +95,13 @@ public class UsuarioService {
     public void saveExpoPushToken(String id, String expoPushToken) {
         Usuario usuario = usuarioRepo.findById(id).orElseThrow();
         usuario.setExpoPushToken(expoPushToken);
+        usuarioRepo.save(usuario);
+    }
+
+    @Transactional
+    public void deleteExpoPushToken(String id){
+        Usuario usuario = usuarioRepo.findById(id).orElseThrow();
+        usuario.setExpoPushToken(null);
         usuarioRepo.save(usuario);
     }
 

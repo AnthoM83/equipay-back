@@ -67,4 +67,15 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<String>logout(@RequestBody AuthRequest authRequest) {
+        try {
+            service.deleteExpoPushToken(authRequest.getCorreo());
+            return ResponseEntity.status(HttpStatus.OK).body("Sesion cerrada correctamente");
+        }
+        catch (EntityExistsException exc) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No se ha podido cerrar sesion");
+        }
+    }
+
 }
