@@ -103,6 +103,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}/contrasena")
+    @PreAuthorize("hasAnyAuthority('Usuario')")
     public void recuperarContrasena(@PathVariable String id) {
             service.recuperarContrasena(id);
     }

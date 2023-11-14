@@ -109,7 +109,7 @@ public class UsuarioService {
         String nuevaContrasena = generarContrasenaSegura();
 
         Usuario usuario = usuarioRepo.findById(correo).orElseThrow();
-        usuario.setPassword(nuevaContrasena);
+        usuario.setPassword(encoder.encode(nuevaContrasena));
 
         usuarioRepo.save(usuario);
 

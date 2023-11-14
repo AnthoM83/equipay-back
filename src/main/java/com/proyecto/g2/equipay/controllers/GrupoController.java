@@ -9,6 +9,7 @@ import com.proyecto.g2.equipay.services.GrupoService;
 import com.proyecto.g2.equipay.services.PagoService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -85,6 +86,28 @@ public class GrupoController {
         }
     }
 
+    @PostMapping("/{id}/usuarios-link")
+    @PreAuthorize("hasAuthority('Usuario')")
+    public void agregarUsuarioAGrupoLink(@PathVariable Integer id, @RequestParam("idUsuario") @NotBlank String idUsuario) {
+        try {
+            grupoService.agregarUsuarioAGrupo(id, idUsuario);
+        } catch (NoSuchElementException exc) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Grupo no encontrado.", exc);
+        }
+    }
+
+    @PostMapping("{idUsuario}/usuarios-codigo")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
+    public void agregarUsuarioAGrupoCodigo(@PathVariable String idUsuario,@RequestParam("codigo") @NotBlank String codigo) {
+        try {
+            grupoService.agregarUsuarioAGrupo(codigo, idUsuario);
+        } catch (NoSuchElementException exc) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Grupo no encontrado.", exc);
+        }
+    }
+
     @GetMapping("/{id}/gastos")
     @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
     public List<GastoDto> gastosEnGrupo(@PathVariable Integer id) {
@@ -138,6 +161,12 @@ public class GrupoController {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Grupo no encontrado.", exc);
         }
+    }
+
+    @PostMapping("/{id}/invitar-amigo/{correo}")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
+    public void invitarAmigo(@PathVariable Integer id, @PathVariable String correo){
+        grupoService.invitarAmigo(id, correo);
     }
 
 }

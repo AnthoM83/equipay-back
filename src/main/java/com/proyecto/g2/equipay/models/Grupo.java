@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -23,6 +24,7 @@ public class Grupo {
     private String nombre;
     private String descripcion;
     private LocalDate fechaCreacion;
+    private String codigo;
 
     // Asociaciones
     @ManyToOne
