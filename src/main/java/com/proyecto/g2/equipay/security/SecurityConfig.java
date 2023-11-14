@@ -36,12 +36,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/api/auth/login", "/api/auth/registro").anonymous();
+            auth.requestMatchers("/api/auth/login", "/api/auth/registro", "/api/auth/contrasena").anonymous();
             auth.requestMatchers("/v3/**", "/swagger-ui/**", "/api-docs/**").permitAll();
             auth.anyRequest().authenticated();
         });
         http.csrf(csrf -> {
-            csrf.ignoringRequestMatchers("/api/auth/login", "/api/auth/registro");
+            csrf.ignoringRequestMatchers("/api/auth/login", "/api/auth/registro", "/api/auth/contrasena");
             csrf.ignoringRequestMatchers("/**");
         });
         http.sessionManagement(sessionmgmt -> {

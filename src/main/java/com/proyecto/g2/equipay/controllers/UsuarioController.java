@@ -100,13 +100,6 @@ public class UsuarioController {
         }
     }
 
-
-    @GetMapping("/{id}/contrasena")
-    @PreAuthorize("hasAnyAuthority('Usuario')")
-    public void recuperarContrasena(@PathVariable String id) {
-        service.recuperarContrasena(id);
-    }
-
     @PostMapping("/{id}/bloquear")
     @PreAuthorize("hasAuthority('Admin')")
     public void bloquearUsuario(@PathVariable String id) {
