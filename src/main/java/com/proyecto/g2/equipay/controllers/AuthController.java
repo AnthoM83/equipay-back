@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -36,12 +35,13 @@ public class AuthController {
 
     // Métodos
     @PostMapping("/registro")
-    public void crearUsuario(@Valid @RequestBody UsuarioAddDto dto) {
+    public ResponseEntity<String>crearUsuario(@Valid @RequestBody UsuarioAddDto dto) {
         try {
             service.crearUsuario(dto);
-        } catch (EntityExistsException exc) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "El correo ingresado ya existe.", exc);
+            return ResponseEntity.status(HttpStatus.OK).body("Usuario creado correctamente");
+        }
+        catch (EntityExistsException exc) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("El correo ingresado ya existe. Vuelva a intentarlo");
         }
     }
 
@@ -49,15 +49,32 @@ public class AuthController {
     public ResponseEntity<String> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getCorreo(), authRequest.getPassword()));
-
             if (authentication.isAuthenticated()) {
-                service.saveExpoPushToken(authRequest.getCorreo(), authRequest.getExpoPushToken());
+                Boolean isAdmin = false;
+                var authorities = authentication.getAuthorities();
+                for (var authority : authorities) {
+                    if (authority.getAuthority().equals("Admin")) { isAdmin = true; }
+                }
+                if (!isAdmin) {
+                    service.saveExpoPushToken(authRequest.getCorreo(), authRequest.getExpoPushToken());
+                }
                 return ResponseEntity.ok(jwtService.generateToken(authRequest.getCorreo()));
             } else {
                 throw new UsernameNotFoundException("Login invalido");
             }
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("El usuario o la contraseña ingresada no son correctos, vuelva a intentarlo.");
+        }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String>logout(@RequestBody AuthRequest authRequest) {
+        try {
+            service.deleteExpoPushToken(authRequest.getCorreo());
+            return ResponseEntity.status(HttpStatus.OK).body("Sesion cerrada correctamente");
+        }
+        catch (EntityExistsException exc) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No se ha podido cerrar sesion");
         }
     }
 

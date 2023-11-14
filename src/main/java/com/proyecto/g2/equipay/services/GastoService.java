@@ -96,8 +96,8 @@ public class GastoService {
         beneficiadoEn.removeIf(filter -> filter.getGrupo().getId().equals(grupoId));
         return mapper.toGastoDtoList(beneficiadoEn);
     }
-    
-        public List<GastoDto> listarGastosDeUsuarioEnGrupo(String usuarioId, Integer grupoId) {
+
+    public List<GastoDto> listarGastosDeUsuarioEnGrupo(String usuarioId, Integer grupoId) {
         List<GastoDto> gastosCubiertos = this.listarGastosCubiertosPorUsuarioEnGrupo(usuarioId, grupoId);
         List<GastoDto> gastosBeneficiados = this.listarGastosDeLosQueUsuarioSeBeneficiaEnGrupo(usuarioId, grupoId);
         gastosCubiertos.addAll(gastosBeneficiados);
@@ -140,4 +140,10 @@ public class GastoService {
             throw new NoSuchElementException();
         }
     }
+
+
+    
+    
+
+
 }
