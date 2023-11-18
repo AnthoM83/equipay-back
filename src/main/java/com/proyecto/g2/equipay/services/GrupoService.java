@@ -13,6 +13,7 @@ import com.proyecto.g2.equipay.models.Grupo;
 import com.proyecto.g2.equipay.models.Usuario;
 import com.proyecto.g2.equipay.repositories.IGrupoRepository;
 import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+
 import org.springframework.data.jpa.domain.Specification;
+
+import javax.swing.text.html.Option;
 
 @Service
 public class GrupoService {
@@ -37,6 +42,8 @@ public class GrupoService {
     GrupoMapper mapper;
     @Autowired
     UsuarioMapper usuarioMapper;
+    @Autowired
+    EmailService emailService;
 
     // Métodos
     public GrupoDtoFull buscarGrupo(Integer id) {
@@ -83,6 +90,7 @@ public class GrupoService {
         Grupo grupo = mapper.toEntity(dto);
         grupo.setDueño(usuarioRepo.findById(dto.getIdDueño()).orElseThrow());
         grupo.setFechaCreacion(LocalDate.now());
+        grupo.setCodigo(generarCodigoUnico());
         grupoRepo.save(grupo);
     }
 
@@ -115,5 +123,34 @@ public class GrupoService {
         grupo.getMiembros().add(usuario);
         grupoRepo.save(grupo);
     }
+
+    @Transactional
+    public void agregarUsuarioAGrupo(String codigo, String idUsuario) {
+        Grupo grupo = buscarGrupoPorCodigo(codigo);
+        Usuario usuario = usuarioRepo.findById(idUsuario).orElseThrow();
+        if (grupo != null) {
+            grupo.getMiembros().add(usuario);
+            grupoRepo.save(grupo);
+        }
+
+    }
+
+    public void invitarAmigo(Integer idGrupo, String idUsuario){
+        Grupo grupo = grupoRepo.findById(idGrupo).orElseThrow();
+        String link = "http://localhost:3000/invitar-amigo?groupId" + idGrupo + "^?userId=" + idUsuario;
+        String mensaje = "Te invitaron a unirte al grupo " + grupo.getNombre()
+                + "Puedes unirte en el link: " + link + "o ingrasando el codigo: " + grupo.getCodigo();
+        emailService.enviarCorreo(idUsuario, "Te invitaron a unirte a un grupo", mensaje);
+    }
+
+    private String generarCodigoUnico() {
+        return java.util.UUID.randomUUID().toString();
+    }
+
+    private Grupo buscarGrupoPorCodigo(String codigo) {
+         Optional<Grupo> optionalGrupo = grupoRepo.findByCodigo(codigo);
+         return optionalGrupo.orElse(null);
+    }
+
 
 }

@@ -7,8 +7,12 @@ import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioUpdateDto;
 import com.proyecto.g2.equipay.commons.enums.EstadoUsuario;
 import com.proyecto.g2.equipay.commons.mappers.UsuarioMapper;
 import com.proyecto.g2.equipay.models.Usuario;
+import com.proyecto.g2.equipay.models.UsuarioBase;
 import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
 import jakarta.persistence.EntityExistsException;
+import com.proyecto.g2.equipay.services.EmailService;
+
+import java.security.SecureRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,6 +32,13 @@ public class UsuarioService {
     UsuarioMapper mapper;
     @Autowired
     PasswordEncoder encoder;
+
+    @Autowired
+    EmailService emailService;
+
+    private static final String CARACTERES = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_+=<>?";
+
+    private static final int LONGITUD_CONTRASENA = 12;
 
     // Métodos
     public UsuarioDto buscarUsuario(String id) {
@@ -89,6 +100,31 @@ public class UsuarioService {
         Usuario usuario = usuarioRepo.findById(id).orElseThrow();
         usuario.setEstadoUsuario(EstadoUsuario.ACTIVO);
         usuarioRepo.save(usuario);
+    }
+
+    public void recuperarContrasena(String correo) {
+        String nuevaContrasena = generarContrasenaSegura();
+
+        Usuario usuario = usuarioRepo.findById(correo).orElseThrow();
+        usuario.setPassword(encoder.encode(nuevaContrasena));
+
+        usuarioRepo.save(usuario);
+
+        String mensaje = "Tu nueva contraseña es: " + nuevaContrasena;
+        emailService.enviarCorreo(usuario.getCorreo(), "Recuperación de Contraseña", mensaje);
+    }
+
+    public static String generarContrasenaSegura() {
+        SecureRandom random = new SecureRandom();
+        StringBuilder contrasena = new StringBuilder(LONGITUD_CONTRASENA);
+
+        for (int i = 0; i < LONGITUD_CONTRASENA; i++) {
+            int indice = random.nextInt(CARACTERES.length());
+            char caracter = CARACTERES.charAt(indice);
+            contrasena.append(caracter);
+        }
+
+        return contrasena.toString();
     }
 
     @Transactional
