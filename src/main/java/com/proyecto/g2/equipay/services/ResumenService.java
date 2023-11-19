@@ -1,7 +1,10 @@
 package com.proyecto.g2.equipay.services;
 
 import com.proyecto.g2.equipay.commons.dtos.estadistica.ValorTotal;
+import com.proyecto.g2.equipay.commons.dtos.estadistica.ValorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses;
+import com.proyecto.g2.equipay.commons.dtos.estadistica.ValorTotalPagosRealizadosPorUsuarioEnGrupos;
 import com.proyecto.g2.equipay.commons.dtos.gasto.GastoDto;
+import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoDto;
 import com.proyecto.g2.equipay.commons.dtos.pago.PagoDto;
 import com.proyecto.g2.equipay.models.Gasto;
 import com.proyecto.g2.equipay.models.Grupo;
@@ -11,6 +14,7 @@ import com.proyecto.g2.equipay.repositories.IGastoRepository;
 import com.proyecto.g2.equipay.repositories.IGrupoRepository;
 import com.proyecto.g2.equipay.repositories.IPagoRepository;
 import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,12 +22,15 @@ import java.util.Map;
 import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ResumenService {
 
 // Dependencias
+    @Autowired
+    GrupoService grupoService;
     @Autowired
     PagoService pagoService;
     @Autowired
@@ -149,5 +156,43 @@ public class ResumenService {
         });
         return retorno;
     }
+
+    public List<ValorTotalPagosRealizadosPorUsuarioEnGrupos> valorTotalDePagosRealizadosPorUsuarioEnGrupos(String usuarioId, String moneda) {
+        List<ValorTotalPagosRealizadosPorUsuarioEnGrupos> total = new ArrayList<>();
+        List<GrupoDto> grupos = grupoService.listarGrupos(usuarioId);
+        for (var grupo : grupos) {
+            List<PagoDto> pagos = pagoService.listarPagosRealizadosPorUsuarioEnGrupo(usuarioId, grupo.getId());
+            pagos.removeIf(filter -> !filter.getMoneda().contains(moneda));
+            Double valorEnGrupos = 0.0;
+            for (var pago : pagos) {
+                valorEnGrupos += pago.getMonto();
+            }
+            total.add(new ValorTotalPagosRealizadosPorUsuarioEnGrupos(grupo.getId(), grupo.getNombre(), Precision.round(valorEnGrupos, 2)));
+        }
+        return total;
+    }
     
+    public List<ValorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses> valorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses(String usuarioId, String moneda) {
+        List<ValorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses> total = new ArrayList<>();
+        List<YearMonth> ultimosDoceMeses = new ArrayList<>();
+        YearMonth ahora = YearMonth.now();
+        for(int i = 1; i <= 12; i++) {
+            ultimosDoceMeses.add(ahora);
+            ahora = ahora.minusMonths(1);
+        }
+        for (var mes : ultimosDoceMeses) {
+            ValorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses valorMes = new ValorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses(mes, 0.0);
+            Specification<Gasto> specGastos = com.proyecto.g2.equipay.commons.specifications.GastoSpecifications.onMonthParaUsuario(mes, usuarioId);
+            List<Gasto> gastos = gastoRepo.findAll(specGastos);
+            Double valorEnMes = 0.0;
+            gastos.removeIf(filter -> !filter.getMoneda().contains(moneda));
+            for (var gasto : gastos) {
+                valorEnMes += gasto.getMonto();
+            }
+            valorMes.setValor(Precision.round(valorEnMes, 2));
+            total.add(valorMes);
+        }
+        return total;
+    }
+
 }

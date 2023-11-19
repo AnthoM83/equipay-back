@@ -25,10 +25,23 @@ public class GastoSpecifications {
             return criteriaBuilder.or(criteriaBuilder.equal(gastoContieneUsuario.get("beneficiado_id"), idUsuario), criteriaBuilder.equal(gastoContieneGrupo.get("grupo_id"), idGrupo));
         };
     }
-    
-        public static Specification<Gasto> onMonth(YearMonth yearMonth) {
+
+    public static Specification<Gasto> onMonth(YearMonth yearMonth) {
         return (root, query, criteriaBuilder) -> {
             return criteriaBuilder.between(root.get("fecha"), yearMonth.atDay(1), yearMonth.atEndOfMonth());
+        };
+    }
+
+    public static Specification<Gasto> onMonthParaUsuario(YearMonth yearMonth, String idUsuario) {
+        return (root, query, criteriaBuilder) -> {
+            Join<Gasto, Usuario> gastoContieneUsuario = root.join("cubiertoPor");
+            return criteriaBuilder.and(
+                    criteriaBuilder.equal(
+                            gastoContieneUsuario.get("correo"), idUsuario),
+                    criteriaBuilder.between(
+                            root.get("fecha"), 
+                            yearMonth.atDay(1), 
+                            yearMonth.atEndOfMonth()));
         };
     }
 

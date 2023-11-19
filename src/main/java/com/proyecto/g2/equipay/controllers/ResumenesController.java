@@ -1,8 +1,6 @@
 package com.proyecto.g2.equipay.controllers;
 
-import com.proyecto.g2.equipay.commons.dtos.estadistica.ValorTotal;
 import com.proyecto.g2.equipay.services.ResumenService;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -100,6 +98,26 @@ public class ResumenesController {
     public ResponseEntity<Object> valorTotalDePagosEnGrupo(@PathVariable Integer id) {
         try {
             return ResponseEntity.ok(resumenSvc.valorTotalDePagosEnGrupo(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ocurrió un error al consultar la estadística.");
+        }
+    }
+
+    @GetMapping("/usuarios/{id}/valor-total-pagos-realizados/{moneda}")
+    @PreAuthorize("hasAuthority('Usuario')")
+    public ResponseEntity<Object> valorTotalDePagosRealizadosPorUsuarioEnGrupos(@PathVariable String id, @PathVariable String moneda) {
+        try {
+            return ResponseEntity.ok(resumenSvc.valorTotalDePagosRealizadosPorUsuarioEnGrupos(id, moneda));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ocurrió un error al consultar la estadística.");
+        }
+    }
+
+    @GetMapping("/usuarios/{id}/gastos-cubiertos-ultimos-doce-meses/{moneda}")
+    @PreAuthorize("hasAuthority('Usuario')")
+    public ResponseEntity<Object> valorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses(@PathVariable String id, @PathVariable String moneda) {
+        try {
+            return ResponseEntity.ok(resumenSvc.valorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses(id, moneda));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ocurrió un error al consultar la estadística.");
         }
