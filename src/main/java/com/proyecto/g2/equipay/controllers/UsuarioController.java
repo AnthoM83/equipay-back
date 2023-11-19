@@ -57,7 +57,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/")
-    @PreAuthorize("hasAuthority('Admin')")
+//    @PreAuthorize("hasAuthority('Admin')")
     public void crearUsuario(@Valid @RequestBody UsuarioAddDto dto) {
         try {
             service.crearUsuario(dto);

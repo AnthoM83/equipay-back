@@ -123,7 +123,7 @@ public class PagoService {
         Usuario destinatario = usuarioRepo.findById(dto.getIdRecibe()).orElseThrow();
         Usuario remitente = usuarioRepo.findById(dto.getIdRealiza()).orElseThrow();
         if(destinatario.getExpoPushToken() != null)
-            notificationService.sendNotification(remitente.getNombre(), destinatario.getCorreo(), destinatario.getExpoPushToken(), "Has recibido un nuevo pago!", "%s %s te ha hecho un pago por %s %s".formatted(remitente.getNombre(), remitente.getApellido(), dto.getMoneda(), dto.getMonto()));
+            notificationService.sendNotification(remitente.getNombre(), destinatario.getCorreo(), destinatario.getExpoPushToken(), "Equipay", "%s %s te ha hecho un pago por %s %s".formatted(remitente.getNombre(), remitente.getApellido(), dto.getMoneda(), dto.getMonto()));
     }
 
     @Transactional
