@@ -1,12 +1,12 @@
 package com.proyecto.g2.equipay.controllers;
 
 import com.proyecto.g2.equipay.commons.dtos.security.AuthRequest;
+import com.proyecto.g2.equipay.commons.dtos.security.RecoveryPasswordRequest;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioAddDto;
 import com.proyecto.g2.equipay.security.JwtService;
 import com.proyecto.g2.equipay.services.UsuarioService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -76,8 +79,8 @@ public class AuthController {
         }
     }
     @PostMapping("/contrasena")
-    public void recuperarContrasena(@RequestParam("idUsuario") @NotBlank String idUsuario) {
-        service.recuperarContrasena(idUsuario);
+    public void recuperarContrasena(@RequestBody RecoveryPasswordRequest recoveryPasswordRequest) {
+        service.recuperarContrasena(recoveryPasswordRequest.getIdUsuario());
     }
 
 }
