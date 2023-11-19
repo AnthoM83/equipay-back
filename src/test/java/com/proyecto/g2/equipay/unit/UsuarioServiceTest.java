@@ -1,4 +1,4 @@
-package com.proyecto.g2.equipay.testing.services;
+package com.proyecto.g2.equipay.unit;
 
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioAddDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDto;
@@ -6,7 +6,7 @@ import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioUpdateDto;
 import com.proyecto.g2.equipay.models.Usuario;
 import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
 import com.proyecto.g2.equipay.services.UsuarioService;
-import com.proyecto.g2.equipay.testing.services.context.UsuarioServiceTestContextConfig;
+import com.proyecto.g2.equipay.unit.context.UsuarioServiceTestContextConfig;
 import jakarta.persistence.EntityExistsException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,27 +66,27 @@ public class UsuarioServiceTest {
     }
 
     @Test
-    public void buscarUsuarioExistente_success() {
+    public void buscarUsuario_usuarioNoExiste_success() {
         String correo = "alejandro.perez@mail.com";
         UsuarioDto found = usuarioSvc.buscarUsuario(correo);
         assertThat(found.getCorreo()).isEqualTo(correo);
     }
 
     @Test
-    public void buscarUsuarioInexistente_exception() {
+    public void buscarUsuario_usuarioNoExiste_exception() {
         assertThrows(NoSuchElementException.class, () -> {
             usuarioSvc.buscarUsuario("correo_inexistente");
         });
     }
 
     @Test
-    public void agregarNuevoUsuario_success() {
+    public void agregarUsuario_success() {
         UsuarioAddDto sofia = new UsuarioAddDto("sofia.perez@mail.com", "Sofia", "Perez", "1234");
         assertDoesNotThrow(() -> usuarioSvc.crearUsuario(sofia));
     }
 
     @Test
-    public void agregarUsuarioYaExistente_exception() {
+    public void agregarUsuario_UsuarioYaExiste_exception() {
         UsuarioAddDto alejandro = new UsuarioAddDto("alejandro.perez@mail.com", "Alejandro", "Perez", "1234");
         assertThrows(EntityExistsException.class, () -> {
             usuarioSvc.crearUsuario(alejandro);
@@ -94,18 +94,18 @@ public class UsuarioServiceTest {
     }
 
     @Test
-    public void listarUsuariosExistentes_success() {
+    public void listarUsuarios_success() {
         List<UsuarioDto> found = usuarioSvc.listarUsuarios();
         assertThat(found).hasSize(3);
     }
 
     @Test
-    public void listarUsuariosYNoExisten_entoncesListaVacia() {
+    public void listarUsuarios_usuarioNoExisten_success_listaVacia() {
         Mockito.when(usuarioRepo.findAll()).thenReturn(new ArrayList<>());
         List<UsuarioDto> found = usuarioSvc.listarUsuarios();
         assertThat(found).hasSize(0);
     }
-    
+
     @Test
     public void bloquearUsuario_success() {
         assertDoesNotThrow(() -> usuarioSvc.bloquearUsuario("alejandro.perez@mail.com"));
@@ -128,7 +128,7 @@ public class UsuarioServiceTest {
     }
 
     @Test
-    public void eliminarUsuarioInexistente_exception() {
+    public void eliminarUsuario_UsuarioNoExiste_exception() {
         assertThrows(NoSuchElementException.class, () -> {
             usuarioSvc.eliminarUsuario("eduardo.martinez@mail.com");
         });

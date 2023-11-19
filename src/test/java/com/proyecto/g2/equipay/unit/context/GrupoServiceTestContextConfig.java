@@ -1,4 +1,4 @@
-package com.proyecto.g2.equipay.testing.services.context;
+package com.proyecto.g2.equipay.unit.context;
 
 import com.proyecto.g2.equipay.commons.mappers.GrupoMapper;
 import com.proyecto.g2.equipay.commons.mappers.UsuarioMapper;
