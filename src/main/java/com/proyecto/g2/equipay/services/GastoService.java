@@ -63,9 +63,13 @@ public class GastoService {
     }
 
     public List<GastoDto> listarGastosDeLosQueUsuarioSeBeneficia(String usuarioId) {
-        Specification<Gasto> specification = hasUsuarioComoBeneficiado(usuarioId);
-        List<Gasto> beneficiadoEn = gastoRepo.findAll(specification);
-        return mapper.toGastoDtoList(beneficiadoEn);
+        if (usuarioRepo.existsById(usuarioId)) {
+            Specification<Gasto> specification = hasUsuarioComoBeneficiado(usuarioId);
+            List<Gasto> beneficiadoEn = gastoRepo.findAll(specification);
+            return mapper.toGastoDtoList(beneficiadoEn);
+        } else {
+            throw new NoSuchElementException();
+        }
     }
 
     public List<GastoDto> listarGastosEnGrupo(Integer grupoId) {
@@ -91,10 +95,14 @@ public class GastoService {
     }
 
     public List<GastoDto> listarGastosDeLosQueUsuarioSeBeneficiaEnGrupo(String usuarioId, Integer grupoId) {
-        Specification<Gasto> specification = hasUsuarioComoBeneficiado(usuarioId);
-        List<Gasto> beneficiadoEn = gastoRepo.findAll(specification);
-        beneficiadoEn.removeIf(filter -> filter.getGrupo().getId().equals(grupoId));
-        return mapper.toGastoDtoList(beneficiadoEn);
+        if (usuarioRepo.existsById(usuarioId) && grupoRepo.existsById(grupoId)) {
+            Specification<Gasto> specification = hasUsuarioComoBeneficiado(usuarioId);
+            List<Gasto> beneficiadoEn = gastoRepo.findAll(specification);
+            beneficiadoEn.removeIf(filter -> filter.getGrupo().getId().equals(grupoId));
+            return mapper.toGastoDtoList(beneficiadoEn);
+        } else {
+            throw new NoSuchElementException();
+        }
     }
 
     public List<GastoDto> listarGastosDeUsuarioEnGrupo(String usuarioId, Integer grupoId) {
@@ -140,10 +148,5 @@ public class GastoService {
             throw new NoSuchElementException();
         }
     }
-
-
-    
-    
-
 
 }

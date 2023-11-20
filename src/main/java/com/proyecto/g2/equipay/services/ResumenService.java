@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -139,22 +140,26 @@ public class ResumenService {
     }
 
     public List<ValorTotal> valorTotalDePagosEnGrupo(Integer grupoId) {
-        List<PagoDto> pagos = pagoService.listarPagosEnGrupo(grupoId);
-        Map<String, Double> monedas = new HashMap<>();
-        List<ValorTotal> retorno = new ArrayList<>();
-        for (var pago : pagos) {
-            String moneda = pago.getMoneda();
-            if (monedas.containsKey(moneda)) {
-                Double current = monedas.get(moneda);
-                monedas.replace(moneda, current + pago.getMonto());
-            } else {
-                monedas.putIfAbsent(moneda, pago.getMonto());
+        if (grupoRepo.existsById(grupoId)) {
+            List<PagoDto> pagos = pagoService.listarPagosEnGrupo(grupoId);
+            Map<String, Double> monedas = new HashMap<>();
+            List<ValorTotal> retorno = new ArrayList<>();
+            for (var pago : pagos) {
+                String moneda = pago.getMoneda();
+                if (monedas.containsKey(moneda)) {
+                    Double current = monedas.get(moneda);
+                    monedas.replace(moneda, current + pago.getMonto());
+                } else {
+                    monedas.putIfAbsent(moneda, pago.getMonto());
+                }
             }
+            monedas.forEach((moneda, total) -> {
+                retorno.add(new ValorTotal(moneda, Precision.round(total, 2)));
+            });
+            return retorno;
+        } else {
+            throw new NoSuchElementException();
         }
-        monedas.forEach((moneda, total) -> {
-            retorno.add(new ValorTotal(moneda, Precision.round(total, 2)));
-        });
-        return retorno;
     }
 
     public List<ValorTotalPagosRealizadosPorUsuarioEnGrupos> valorTotalDePagosRealizadosPorUsuarioEnGrupos(String usuarioId, String moneda) {
@@ -171,28 +176,32 @@ public class ResumenService {
         }
         return total;
     }
-    
+
     public List<ValorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses> valorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses(String usuarioId, String moneda) {
-        List<ValorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses> total = new ArrayList<>();
-        List<YearMonth> ultimosDoceMeses = new ArrayList<>();
-        YearMonth ahora = YearMonth.now();
-        for(int i = 1; i <= 12; i++) {
-            ultimosDoceMeses.add(ahora);
-            ahora = ahora.minusMonths(1);
-        }
-        for (var mes : ultimosDoceMeses) {
-            ValorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses valorMes = new ValorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses(mes, 0.0);
-            Specification<Gasto> specGastos = com.proyecto.g2.equipay.commons.specifications.GastoSpecifications.onMonthParaUsuario(mes, usuarioId);
-            List<Gasto> gastos = gastoRepo.findAll(specGastos);
-            Double valorEnMes = 0.0;
-            gastos.removeIf(filter -> !filter.getMoneda().contains(moneda));
-            for (var gasto : gastos) {
-                valorEnMes += gasto.getMonto();
+        if (usuarioRepo.existsById(usuarioId)) {
+            List<ValorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses> total = new ArrayList<>();
+            List<YearMonth> ultimosDoceMeses = new ArrayList<>();
+            YearMonth ahora = YearMonth.now();
+            for (int i = 1; i <= 12; i++) {
+                ultimosDoceMeses.add(ahora);
+                ahora = ahora.minusMonths(1);
             }
-            valorMes.setValor(Precision.round(valorEnMes, 2));
-            total.add(valorMes);
+            for (var mes : ultimosDoceMeses) {
+                ValorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses valorMes = new ValorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses(mes, 0.0);
+                Specification<Gasto> specGastos = com.proyecto.g2.equipay.commons.specifications.GastoSpecifications.onMonthParaUsuario(mes, usuarioId);
+                List<Gasto> gastos = gastoRepo.findAll(specGastos);
+                Double valorEnMes = 0.0;
+                gastos.removeIf(filter -> !filter.getMoneda().contains(moneda));
+                for (var gasto : gastos) {
+                    valorEnMes += gasto.getMonto();
+                }
+                valorMes.setValor(Precision.round(valorEnMes, 2));
+                total.add(valorMes);
+            }
+            return total;
+        } else {
+            throw new NoSuchElementException();
         }
-        return total;
     }
 
 }
