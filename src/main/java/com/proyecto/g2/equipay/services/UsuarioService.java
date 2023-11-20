@@ -7,10 +7,8 @@ import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioUpdateDto;
 import com.proyecto.g2.equipay.commons.enums.EstadoUsuario;
 import com.proyecto.g2.equipay.commons.mappers.UsuarioMapper;
 import com.proyecto.g2.equipay.models.Usuario;
-import com.proyecto.g2.equipay.models.UsuarioBase;
 import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
 import jakarta.persistence.EntityExistsException;
-import com.proyecto.g2.equipay.services.EmailService;
 
 import java.security.SecureRandom;
 import org.springframework.beans.factory.annotation.Autowired;

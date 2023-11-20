@@ -13,7 +13,6 @@ import com.proyecto.g2.equipay.models.Grupo;
 import com.proyecto.g2.equipay.models.Usuario;
 import com.proyecto.g2.equipay.repositories.IGrupoRepository;
 import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,6 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.swing.text.html.Option;
 
 @Service
 public class GrupoService {

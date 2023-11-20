@@ -18,19 +18,19 @@ public class DeudaServiceTest {
     private DeudaService deudaSvc;
 
     @Test
-    public void consultarDeudasDeUsuarioEnGrupo_success(Integer idGrupo, String idUsuario) {
+    public void consultarDeudasDeUsuarioEnGrupo_success() {
         assertDoesNotThrow(() -> deudaSvc.consultarDeudasDeUsuarioEnGrupo(1, "alejandro.perez@mail.com"));
     }
 
     @Test
-    public void consultarDeudasDeUsuarioEnGrupo_usuarioNoExiste_exception(Integer idGrupo, String idUsuario) {
+    public void consultarDeudasDeUsuarioEnGrupo_usuarioNoExiste_exception() {
         assertThrows(NoSuchElementException.class, () -> {
             deudaSvc.consultarDeudasDeUsuarioEnGrupo(1, "no-user@test.com");
         });
     }
 
     @Test
-    public void consultarDeudasDeUsuarioEnGrupo_grupoNoExiste_exception(Integer idGrupo, String idUsuario) {
+    public void consultarDeudasDeUsuarioEnGrupo_grupoNoExiste_exception() {
         assertThrows(NoSuchElementException.class, () -> {
             deudaSvc.consultarDeudasDeUsuarioEnGrupo(99, "alejandro.perez@test.com");
         });
