@@ -12,12 +12,13 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/grupos")
@@ -100,14 +101,15 @@ public class GrupoController {
         }
     }
 
-    @PostMapping("{idUsuario}/usuarios-codigo")
+    @PostMapping("/usuarios-codigo")
     @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
-    public void agregarUsuarioAGrupoCodigo(@PathVariable String idUsuario,@RequestParam("codigo") @NotBlank String codigo) {
+    public ResponseEntity<String> agregarUsuarioAGrupoCodigo(@RequestBody UnirseAGrupoDto unirseAGrupoDto) {
         try {
-            grupoService.agregarUsuarioAGrupo(codigo, idUsuario);
-        } catch (NoSuchElementException exc) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Grupo no encontrado.", exc);
+            grupoService.agregarUsuarioAGrupo(unirseAGrupoDto.getCodGrupo(), unirseAGrupoDto.getIdUsuario());
+            return ResponseEntity.status(HttpStatus.OK).body("Se ha unido al grupo correctamente");
+        }
+        catch (NoSuchElementException exc) {
+            return ResponseEntity.status(HttpStatus.OK).body(exc.getMessage());
         }
     }
 

@@ -7,25 +7,21 @@ import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoUpdateDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDto;
 import com.proyecto.g2.equipay.commons.mappers.GrupoMapper;
 import com.proyecto.g2.equipay.commons.mappers.UsuarioMapper;
-import static com.proyecto.g2.equipay.commons.specifications.GrupoSpecifications.hasUsuario;
-import static com.proyecto.g2.equipay.commons.specifications.UsuarioSpecifications.hasGrupo;
 import com.proyecto.g2.equipay.models.Grupo;
 import com.proyecto.g2.equipay.models.Usuario;
 import com.proyecto.g2.equipay.repositories.IGrupoRepository;
 import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
-import org.springframework.data.jpa.domain.Specification;
+import static com.proyecto.g2.equipay.commons.specifications.GrupoSpecifications.hasUsuario;
+import static com.proyecto.g2.equipay.commons.specifications.UsuarioSpecifications.hasGrupo;
 
 
 @Service
@@ -126,9 +122,15 @@ public class GrupoService {
     public void agregarUsuarioAGrupo(String codigo, String idUsuario) {
         Grupo grupo = buscarGrupoPorCodigo(codigo);
         Usuario usuario = usuarioRepo.findById(idUsuario).orElseThrow();
-        if (grupo != null) {
+        if (grupo != null && !usuario.getMiembroDe().contains(grupo)) {
             grupo.getMiembros().add(usuario);
             grupoRepo.save(grupo);
+        }
+        else if (grupo != null && usuario.getMiembroDe().contains(grupo)) {
+            throw new NoSuchElementException("El usuario ya se ha unido al grupo");
+        }
+        else{
+            throw new NoSuchElementException("El codigo de grupo ingresado no existe");
         }
 
     }
