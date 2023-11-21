@@ -144,7 +144,7 @@ public class GrupoService {
     }
 
     private String generarCodigoUnico() {
-        return java.util.UUID.randomUUID().toString();
+        return (java.util.UUID.randomUUID().toString()).substring(0,8);
     }
 
     private Grupo buscarGrupoPorCodigo(String codigo) {
