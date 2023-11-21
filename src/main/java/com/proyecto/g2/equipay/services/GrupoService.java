@@ -84,12 +84,13 @@ public class GrupoService {
     }
 
     @Transactional
-    public void crearGrupo(GrupoAddDto dto) {
+    public Integer crearGrupo(GrupoAddDto dto) {
         Grupo grupo = mapper.toEntity(dto);
         grupo.setDueño(usuarioRepo.findById(dto.getIdDueño()).orElseThrow());
         grupo.setFechaCreacion(LocalDate.now());
         grupo.setCodigo(generarCodigoUnico());
-        grupoRepo.save(grupo);
+        Grupo grupoSave = grupoRepo.save(grupo);
+        return grupoSave.getId();
     }
 
     @Transactional
@@ -135,14 +136,16 @@ public class GrupoService {
 
     public void invitarAmigo(Integer idGrupo, String idUsuario){
         Grupo grupo = grupoRepo.findById(idGrupo).orElseThrow();
-        String link = "http://localhost:3000/invitar-amigo?groupId" + idGrupo + "^?userId=" + idUsuario;
+        String link = "http://localhost:3000/unirse-grupo-link?groupId=" + idGrupo + "&?userId=" + idUsuario;
         String mensaje = "Te invitaron a unirte al grupo " + grupo.getNombre()
-                + "Puedes unirte en el link: " + link + "o ingrasando el codigo: " + grupo.getCodigo();
+                + "\n Puedes unirte en el link: " + link + " o ingrasando el codigo: " + grupo.getCodigo();
         emailService.enviarCorreo(idUsuario, "Te invitaron a unirte a un grupo", mensaje);
     }
 
     private String generarCodigoUnico() {
-        return java.util.UUID.randomUUID().toString();
+        String codigo = java.util.UUID.randomUUID().toString();
+        codigo = codigo.substring(0, 8);
+        return codigo;
     }
 
     private Grupo buscarGrupoPorCodigo(String codigo) {
