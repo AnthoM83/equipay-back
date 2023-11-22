@@ -45,9 +45,10 @@ public class GrupoController {
 
     @PostMapping("/")
     @PreAuthorize("hasAuthority('Usuario')")
-    public void crearGrupo(@Valid @RequestBody GrupoAddDto dto) {
+    public ResponseEntity<Integer> crearGrupo(@Valid @RequestBody GrupoAddDto dto) {
         try {
-            grupoService.crearGrupo(dto);
+            Integer grupoId = grupoService.crearGrupo(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(grupoId);
         } catch (EntityExistsException exc) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT, "El grupo ya existe.", exc);
