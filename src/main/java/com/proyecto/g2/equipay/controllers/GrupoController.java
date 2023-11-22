@@ -175,4 +175,10 @@ public class GrupoController {
         grupoService.invitarAmigo(id, correo);
     }
 
+    @PostMapping("/invitar-amigos")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
+    public void invitarAmigos(@RequestBody InvitarAmigosDto invitarAmigosDto){
+        grupoService.invitarAmigos(invitarAmigosDto.getIdGrupo(), invitarAmigosDto.getIdUsuarios());
+    }
+
 }
