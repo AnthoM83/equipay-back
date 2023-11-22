@@ -14,17 +14,15 @@ import com.proyecto.g2.equipay.repositories.IGastoRepository;
 import com.proyecto.g2.equipay.repositories.IGrupoRepository;
 import com.proyecto.g2.equipay.repositories.IPagoRepository;
 import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
-import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
 import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 public class ResumenService {
@@ -182,12 +180,16 @@ public class ResumenService {
             List<ValorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses> total = new ArrayList<>();
             List<YearMonth> ultimosDoceMeses = new ArrayList<>();
             YearMonth ahora = YearMonth.now();
-            for (int i = 1; i <= 12; i++) {
+            for (int i = 1; i <= 6; i++) {
                 ultimosDoceMeses.add(ahora);
                 ahora = ahora.minusMonths(1);
             }
             for (var mes : ultimosDoceMeses) {
-                ValorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses valorMes = new ValorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses(mes, 0.0);
+                String nombreMesAbreviado = DateTimeFormatter.ofPattern("MMM", Locale.getDefault()).format(mes);
+                String fechaCompleta = mes.toString();
+
+                ValorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses valorMes = new ValorTotalGastosCubiertosPorUsuarioEnUltimosDoceMeses(fechaCompleta, nombreMesAbreviado, 0.0);
+
                 Specification<Gasto> specGastos = com.proyecto.g2.equipay.commons.specifications.GastoSpecifications.onMonthParaUsuario(mes, usuarioId);
                 List<Gasto> gastos = gastoRepo.findAll(specGastos);
                 Double valorEnMes = 0.0;
@@ -198,10 +200,10 @@ public class ResumenService {
                 valorMes.setValor(Precision.round(valorEnMes, 2));
                 total.add(valorMes);
             }
+            Collections.sort(total);
             return total;
         } else {
             throw new NoSuchElementException();
         }
     }
-
 }

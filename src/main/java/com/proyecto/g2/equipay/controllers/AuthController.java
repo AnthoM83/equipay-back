@@ -64,7 +64,7 @@ public class AuthController {
                 throw new UsernameNotFoundException("Login invalido");
             }
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("El usuario o la contraseña ingresada no son correctos, vuelva a intentarlo.");
+            return ResponseEntity.status(HttpStatus.OK).body("El usuario o la contraseña ingresada no son correctos, vuelva a intentarlo.");
         }
     }
 
