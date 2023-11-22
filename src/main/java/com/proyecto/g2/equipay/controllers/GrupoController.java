@@ -44,7 +44,7 @@ public class GrupoController {
     }
 
     @PostMapping("/")
-    @PreAuthorize("hasAuthority('Usuario')")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
     public ResponseEntity<Integer> crearGrupo(@Valid @RequestBody GrupoAddDto dto) {
         try {
             Integer grupoId = grupoService.crearGrupo(dto);
