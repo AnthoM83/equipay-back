@@ -1,6 +1,7 @@
 package com.proyecto.g2.equipay.commons.helpers;
 
 import com.proyecto.g2.equipay.commons.dtos.admin.AdminAddDto;
+import com.proyecto.g2.equipay.commons.dtos.categoria.AddEditCategoriaDto;
 import com.proyecto.g2.equipay.commons.dtos.gasto.GastoAddDto;
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoAddDto;
 import com.proyecto.g2.equipay.commons.dtos.pago.PagoAddDto;
@@ -41,11 +42,11 @@ public class DataInitializer {
         }
 
         // Categorías
-        svcCategoria.crearCategoria(new Categoria(1, "Comida"));
-        svcCategoria.crearCategoria(new Categoria(2, "Supermercado"));
-        svcCategoria.crearCategoria(new Categoria(3, "Transporte"));
-        svcCategoria.crearCategoria(new Categoria(4, "Viaje"));
-        svcCategoria.crearCategoria(new Categoria(5, "Combustible"));
+        svcCategoria.crearCategoria(new AddEditCategoriaDto("Comida"));
+        svcCategoria.crearCategoria(new AddEditCategoriaDto("Supermercado"));
+        svcCategoria.crearCategoria(new AddEditCategoriaDto("Transporte"));
+        svcCategoria.crearCategoria(new AddEditCategoriaDto("Viaje"));
+        svcCategoria.crearCategoria(new AddEditCategoriaDto("Combustible"));
 
         // Admins
         svcAdmin.crearAdmin(new AdminAddDto("admin@equipay.com", "admin", null, "1234"));

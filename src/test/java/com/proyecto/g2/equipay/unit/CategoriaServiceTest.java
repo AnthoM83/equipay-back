@@ -1,5 +1,6 @@
 package com.proyecto.g2.equipay.unit;
 
+import com.proyecto.g2.equipay.commons.dtos.categoria.AddEditCategoriaDto;
 import com.proyecto.g2.equipay.models.Categoria;
 import com.proyecto.g2.equipay.repositories.ICategoriaRepository;
 import com.proyecto.g2.equipay.services.CategoriaService;
@@ -64,8 +65,8 @@ public class CategoriaServiceTest {
 
     @Test
     public void agregarCategoria_success() {
-        Categoria categoria = Categoria.builder().nombre("Otros").build();
-        assertDoesNotThrow(() -> categoriaSvc.crearCategoria(categoria));
+        AddEditCategoriaDto dto = new AddEditCategoriaDto("Otros");
+        assertDoesNotThrow(() -> categoriaSvc.crearCategoria(dto));
     }
 
     @Test
@@ -83,8 +84,8 @@ public class CategoriaServiceTest {
 
     @Test
     public void modificarCategoria_success() {
-        Categoria categoria = Categoria.builder().nombre("Compras cambiado").build();
-        assertDoesNotThrow(() -> categoriaSvc.modificarCategoria(1, categoria));
+        AddEditCategoriaDto dto = new AddEditCategoriaDto("Compras cambiado");
+        assertDoesNotThrow(() -> categoriaSvc.modificarCategoria(1, dto));
     }
 
     @Test

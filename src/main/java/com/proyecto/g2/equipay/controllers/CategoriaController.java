@@ -1,5 +1,6 @@
 package com.proyecto.g2.equipay.controllers;
 
+import com.proyecto.g2.equipay.commons.dtos.categoria.AddEditCategoriaDto;
 import com.proyecto.g2.equipay.models.Categoria;
 import com.proyecto.g2.equipay.services.CategoriaService;
 import jakarta.persistence.EntityExistsException;
@@ -47,7 +48,7 @@ public class CategoriaController {
 
     @PostMapping("/")
     @PreAuthorize("hasAuthority('Admin')")
-    public void crearCategoria(@Valid @RequestBody Categoria categoria) {
+    public void crearCategoria(@Valid @RequestBody AddEditCategoriaDto categoria) {
         try {
             service.crearCategoria(categoria);
         } catch (EntityExistsException exc) {
@@ -58,7 +59,7 @@ public class CategoriaController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('Admin')")
-    public void modificarCategoria(@PathVariable Integer id, @Valid @RequestBody Categoria categoria) {
+    public void modificarCategoria(@PathVariable Integer id, @Valid @RequestBody AddEditCategoriaDto categoria) {
         try {
             service.modificarCategoria(id, categoria);
         } catch (NoSuchElementException exc) {
