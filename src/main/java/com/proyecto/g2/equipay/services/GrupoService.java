@@ -147,7 +147,7 @@ public class GrupoService {
     public void invitarAmigos(Integer idGrupo, List<String> idUsuarios){
         Grupo grupo = grupoRepo.findById(idGrupo).orElseThrow();
         for (String idUsuario : idUsuarios) {
-            String link = "http://localhost:3000/unirse-grupo-link?groupId=" + idGrupo + "&?userId=" + idUsuario;
+            String link = "http://localhost:3000/unirse-grupo-link?groupId=" + idGrupo + "&userId=" + idUsuario;
             String mensaje = "Te invitaron a unirte al grupo " + grupo.getNombre()
                     + "\n Puedes unirte en el link: " + link + " o ingrasando el codigo: " + grupo.getCodigo();
             emailService.enviarCorreo(idUsuario, "Te invitaron a unirte a un grupo", mensaje);
