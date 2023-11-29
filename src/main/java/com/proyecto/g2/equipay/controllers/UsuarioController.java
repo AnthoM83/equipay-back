@@ -1,13 +1,17 @@
 package com.proyecto.g2.equipay.controllers;
 
+import com.proyecto.g2.equipay.commons.dtos.gasto.GastoDto;
 import com.proyecto.g2.equipay.commons.dtos.grupo.GrupoDto;
 import com.proyecto.g2.equipay.commons.dtos.notification.NotificationDto;
+import com.proyecto.g2.equipay.commons.dtos.pago.PagoDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioAddDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDetailsDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioDto;
 import com.proyecto.g2.equipay.commons.dtos.usuario.UsuarioUpdateDto;
+import com.proyecto.g2.equipay.services.GastoService;
 import com.proyecto.g2.equipay.services.GrupoService;
 import com.proyecto.g2.equipay.services.NotificationService;
+import com.proyecto.g2.equipay.services.PagoService;
 import com.proyecto.g2.equipay.services.UsuarioService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.validation.Valid;
@@ -31,6 +35,10 @@ public class UsuarioController {
     GrupoService grupoService;
     @Autowired
     NotificationService notificationService;
+    @Autowired
+    GastoService gastoService;
+    @Autowired
+    PagoService pagoService;
 
     // Métodos
     @GetMapping("/{id}")
@@ -127,10 +135,31 @@ public class UsuarioController {
     public List<NotificationDto> listarNotificacionesUsuario(@PathVariable String id) {
         try {
             return notificationService.listarNotificacionesUsuario(id);
-        }
-        catch (NoSuchElementException exc) {
+        } catch (NoSuchElementException exc) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "No existen notificaciones.", exc);
+        }
+    }
+
+    @GetMapping("/{id}/gastos-cubiertos")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
+    public List<GastoDto> listarGastosCubiertosPorUsuario(@PathVariable String id) {
+        try {
+            return gastoService.listarGastosCubiertosPorUsuario(id);
+        } catch (NoSuchElementException exc) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Usuario no encontrado.", exc);
+        }
+    }
+
+    @GetMapping("/{id}/pagos-realizados")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Usuario')")
+    public List<PagoDto> listarPagosRealizadosPorUsuario(@PathVariable String id) {
+        try {
+            return pagoService.listarPagosRealizadosPorUsuario(id);
+        } catch (NoSuchElementException exc) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Usuario no encontrado.", exc);
         }
     }
 
