@@ -14,8 +14,11 @@ import com.proyecto.g2.equipay.repositories.IUsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -128,17 +131,17 @@ public class GrupoService {
             grupoRepo.save(grupo);
         }
         else if (grupo != null && usuario.getMiembroDe().contains(grupo)) {
-            throw new NoSuchElementException("El usuario ya se ha unido al grupo");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "El usuario ya se ha unido al grupo");
         }
         else{
-            throw new NoSuchElementException("El codigo de grupo ingresado no existe");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El código de grupo ingresado no existe");
         }
 
     }
 
     public void invitarAmigo(Integer idGrupo, String idUsuario){
         Grupo grupo = grupoRepo.findById(idGrupo).orElseThrow();
-        String link = "http://localhost:3000/unirse-grupo-link?groupId=" + idGrupo + "&?userId=" + idUsuario;
+        String link = "http://localhost:3000/unirse-grupo-link?groupId=" + idGrupo + "&userId=" + idUsuario;
         String mensaje = "Te invitaron a unirte al grupo " + grupo.getNombre()
                 + "\n Puedes unirte en el link: " + link + " o ingrasando el codigo: " + grupo.getCodigo();
         emailService.enviarCorreo(idUsuario, "Te invitaron a unirte a un grupo", mensaje);
